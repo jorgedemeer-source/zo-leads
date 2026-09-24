@@ -28,9 +28,10 @@
   #who .names button:hover{border-color:var(--cobalt); color:var(--cobalt);}
   #who .otro{display:flex; gap:8px; margin-top:12px;}
   #who .otro input{flex:1;}
+  #who .otro .btn{min-height:54px; padding-inline:22px;}
   .yo{display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--white); border-radius:12px; padding:14px 18px; margin-bottom:12px; font-size:.95rem;}
   .yo b{font-weight:400; color:var(--cobalt);}
-  .yo button{background:none; border:0; color:var(--muted); text-decoration:underline; font-size:.88rem; padding:0;}
+  .yo button{background:none; border:0; color:var(--cobalt); text-decoration:underline; font-size:1rem; padding:8px 0;}
   #install{display:flex; align-items:center; gap:12px; background:var(--white); border-radius:12px; padding:12px 14px; margin:14px 0 0; font-size:.9rem;}
   #install .x{margin-left:auto; background:none; border:0; color:var(--cobalt); text-decoration:underline; font-size:.9rem;}
 
@@ -70,7 +71,7 @@
   @media (min-width:600px){ .hero{min-height:480px;} .hero h2{font-size:3.2rem;} }
 
   /* banda inferior a sangre con la firma en blanco */
-  .band{position:relative; height:230px; overflow:hidden; isolation:isolate; margin-top:8px; }
+  .band{position:relative; height:230px; overflow:hidden; isolation:isolate; margin-top:8px;  border-top:1px solid var(--cobalt);}
   .band img.bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; z-index:-2;}
   .band::after{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.12) 0%, rgba(0,11,65,.35) 100%);}
   .band .sig{position:absolute; inset:auto; left:20px; top:18px; height:34px; width:auto; z-index:1; filter:drop-shadow(0 1px 8px rgba(0,11,65,.4));}
@@ -118,7 +119,7 @@
   .btn.primary:hover{background:var(--cobalt-deep);}
   .btn.quiet{background:transparent; border:1px solid var(--hair); font-weight:400;}
   .btn.danger{background:transparent; border:1px solid var(--bad); color:var(--bad);}
-  .btn.sm{padding:9px 14px; font-size:.86rem; min-height:38px;}
+  .btn.sm{padding:11px 16px; font-size:.92rem; min-height:44px;}
   .btn:disabled{opacity:.45; cursor:default;}
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
 
@@ -207,13 +208,13 @@
         <div class="field"><label for="f-ciudad">Ciudad</label><input type="text" id="f-ciudad" autocapitalize="words"></div>
         <div class="field"><label>Estado</label>
           <div class="seg" id="f-estado" data-val="">
-            <button type="button" data-v="Apertura" aria-pressed="false">Apertura</button>
             <button type="button" data-v="Cliente" aria-pressed="false">Cliente</button>
             <button type="button" data-v="Excliente" aria-pressed="false">Excliente</button>
             <button type="button" data-v="No cliente" aria-pressed="false">No cliente</button>
           </div>
         </div>
         <div class="field"><label for="f-motivo">Interesado en</label><select id="f-motivo"></select></div>
+        <div class="field" id="f-colab-wrap" hidden><label for="f-colab">¿En qué?</label><input type="text" id="f-colab" placeholder="Describe la colaboración"></div>
         <div class="field"><label for="f-notas">Información relevante</label><textarea id="f-notas" placeholder="Lo que haga falta saber para el seguimiento"></textarea></div>
         <div class="field"><label for="f-evento">Congreso</label><select id="f-evento"></select></div>
         <select id="f-captador" hidden></select>
@@ -310,8 +311,8 @@
         provincias:["Sevilla","Málaga","Cádiz","Córdoba","Granada","Jaén","Almería","Huelva","Ceuta","Melilla"] }
     ],
     especialidades: ["Dermatología","Medicina estética","Cirugía plástica","Medicina general","Enfermería / esteticista","Farmacia","Distribuidor","Otro"],
-    estados: ["Apertura","Cliente","Excliente","No cliente"],
-    intereses: ["Toda la gama","Lanzamientos","Formación","Colaboración especial","Otro (ver información relevante)"],
+    estados: ["Cliente","Excliente","No cliente"],
+    intereses: ["Apertura","Lanzamientos","Formación","Colaboración especial"],
     legal: "Datos de contacto profesional tratados por ZO Skin Health España para la relación comercial con la clínica. Derechos: privacidad@zoskinhealth.com."
   };
   C.captadores = C.equipo.concat(C.territorios.map(function(t){ return t.delegado; }));
@@ -391,6 +392,7 @@
   var FILTER = { del:'', prov:'', ev:'', q:'' };
   fill('f-esp', C.especialidades, 'Elegir…'); fill('f-motivo', C.intereses, 'Elegir…');
   function setSeg(id, v){ var el=$(id); el.dataset.val=v; Array.prototype.forEach.call(el.querySelectorAll('button'), function(b){ b.setAttribute('aria-pressed', String(b.dataset.v===v)); }); }
+  $('f-motivo').addEventListener('change', function(){ $('f-colab-wrap').hidden = this.value !== 'Colaboración especial'; });
   $('f-estado').addEventListener('click', function(e){ var b=e.target.closest('button'); if(!b) return; setSeg('f-estado', $('f-estado').dataset.val===b.dataset.v ? '' : b.dataset.v); }); fill('f-captador', C.captadores.concat(['Otro']), 'Elegir…');
   fill('f-evento', C.congresoFijo ? C.eventos : C.eventos.concat(['Otro congreso'])); $('f-evento').value = C.evento; $('f-evento').disabled = !!C.congresoFijo;
   $('f-evento').addEventListener('change', function(){ $('f-evento-otro-wrap').hidden = this.value !== 'Otro congreso'; });
@@ -413,7 +415,7 @@
       evento: ev, nombre: $('f-nombre').value.trim(), clinica: $('f-clinica').value.trim(), especialidad: $('f-esp').value,
       provincia: prov, ciudad: $('f-ciudad').value.trim(), territorio: t.nombre, delegado: t.delegado, delegadoEmail: t.email,
       telefono: $('f-tel').value.trim(), email: $('f-email').value.trim().toLowerCase(),
-      estado: $('f-estado').dataset.val, motivo: $('f-motivo').value, notas: $('f-notas').value.trim(), captador: YO || ''
+      estado: $('f-estado').dataset.val, motivo: $('f-motivo').value, colaboracion: ($('f-motivo').value==='Colaboración especial' ? $('f-colab').value.trim() : ''), notas: $('f-notas').value.trim(), captador: YO || ''
     };
   }
   var REQ = ['f-evento','f-evento-otro','f-nombre','f-clinica','f-esp','f-prov','f-tel','f-email'];
@@ -428,7 +430,7 @@
     return bad;
   }
   function resetForm(){
-    $('f').reset(); $('f-id').value=''; setSeg('f-estado','');
+    $('f').reset(); $('f-id').value=''; setSeg('f-estado',''); $('f-colab-wrap').hidden = true;
     $('f-evento').value = (C.congresoFijo ? C.evento : (lsGet('zo_leads_evento') || C.evento)); $('f-evento-otro-wrap').hidden = $('f-evento').value !== 'Otro congreso';
     REQ.forEach(function(i){ $(i).classList.remove('err'); });
     $('hero-title').textContent='Nuevo contacto'; $('f-save').textContent='Guardar contacto'; $('f-editacts').hidden=true;
@@ -438,7 +440,7 @@
     $('f-id').value=l.id; $('f-nombre').value=l.nombre||''; $('f-clinica').value=l.clinica||''; $('f-esp').value=l.especialidad||'';
     if (C.eventos.indexOf(l.evento)>=0){ $('f-evento').value=l.evento; $('f-evento-otro-wrap').hidden=true; } else { $('f-evento').value='Otro congreso'; $('f-evento-otro').value=l.evento||''; $('f-evento-otro-wrap').hidden=false; }
     $('f-prov').value=l.provincia||''; $('f-ciudad').value=l.ciudad||''; $('f-tel').value=l.telefono||''; $('f-email').value=l.email||'';
-    $('f-motivo').value=l.motivo||''; $('f-notas').value=l.notas||''; setSeg('f-estado', l.estado||'');
+    $('f-motivo').value=l.motivo||''; $('f-colab').value=l.colaboracion||''; $('f-colab-wrap').hidden = l.motivo!=='Colaboración especial'; $('f-notas').value=l.notas||''; setSeg('f-estado', l.estado||'');
     $('f-save').textContent='Guardar cambios'; $('f-editacts').hidden=false;
     updateRoute(); show('nuevo'); $('hero-title').textContent='Editar contacto';
   }
@@ -503,7 +505,7 @@
         + '<div class="n">'+esc(l.nombre || l.clinica)+'</div>'
         + (line2 ? '<div class="c">'+esc(line2)+'</div>' : '')
         + (contact ? '<div class="c">'+esc(contact)+'</div>' : '')
-        + '<div class="meta m"><b>'+esc(l.delegado||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo):'')+(l.captador?' · '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
+        + '<div class="meta m"><b>'+esc(l.delegado||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo)+(l.colaboracion?' ('+esc(l.colaboracion)+')':''):'')+(l.captador?' · '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
         + '<div class="acts"><button class="btn sm" data-a="copy">Copiar ficha</button><button class="btn sm quiet" data-a="edit">Editar</button><button class="btn sm quiet del" data-a="ask">Eliminar</button>'
         + '<span class="confirm">¿Seguro? <button class="btn sm danger" data-a="del">Sí, eliminar</button><button class="btn sm quiet" data-a="no">No</button></span></div>'
         + '</div>';
@@ -521,7 +523,7 @@
       'Nombre: ' + (l.nombre||'-'), 'Clínica: ' + (l.clinica||'-'), 'Especialidad: ' + (l.especialidad||'-'),
       'Ciudad / provincia: ' + [l.ciudad,l.provincia].filter(Boolean).join(', '), 'Territorio: ' + l.territorio + (l.delegado?' · '+l.delegado+' · '+l.delegadoEmail:''),
       'Teléfono: ' + (l.telefono||'-'), 'Email: ' + (l.email||'-'),
-      'Estado: ' + (l.estado||'-'), 'Interesado en: ' + (l.motivo||'-'), 'Información relevante: ' + (l.notas||'-'), 'Captado por: ' + (l.captador||'-') + ' · ' + fmtDate(l.ts)].join('\n');
+      'Estado: ' + (l.estado||'-'), 'Interesado en: ' + (l.motivo||'-') + (l.colaboracion ? ' · ' + l.colaboracion : ''), 'Información relevante: ' + (l.notas||'-'), 'Captado por: ' + (l.captador||'-') + ' · ' + fmtDate(l.ts)].join('\n');
   }
   $('list').addEventListener('click', function(e){
     var b = e.target.closest('button[data-a]'); if (!b) return;
@@ -541,7 +543,7 @@
   function fallbackCopy(txt){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); }
 
   /* ---------- Excel: .xlsx real; en iPhone abre la hoja de Compartir ---------- */
-  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['delegado','Account manager'],['delegadoEmail','Email account manager'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['notas','Información relevante'],['captador','Captado por'],['id','ID']];
+  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['delegado','Account manager'],['delegadoEmail','Email account manager'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['colaboracion','Colaboración: en qué'],['notas','Información relevante'],['captador','Captado por'],['id','ID']];
   function cell(l, k){ var v = l[k]; if (k==='ts') return new Date(v).toLocaleString('es-ES'); return v==null ? '' : String(v); }
   function csv(rows){
     var q = function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; };
