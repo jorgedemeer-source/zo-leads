@@ -23,6 +23,7 @@
   #who .box{background:var(--white); border-radius:14px; padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px)); width:100%; max-width:520px;}
   #who h3{font-size:1.5rem; font-weight:300; margin:0 0 4px;}
   #who p{margin:0 0 16px; color:var(--muted); font-size:.92rem;}
+  .err-txt{color:var(--bad) !important; margin:10px 0 0 !important;}
   #who .names{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   #who .names button{border:1px solid var(--hair); background:var(--white); border-radius:8px; padding:14px 10px; font-size:1rem; font-weight:300; color:var(--fg); min-height:52px;}
   #who .names button:hover{border-color:var(--cobalt); color:var(--cobalt);}
@@ -264,7 +265,7 @@
 <div class="band" style="margin-bottom:0"><img id="band-img" class="bg" src="img/bottom_polish.jpg" alt=""><span class="cap" id="band-cap">The system for skin transformation</span><img class="sig" src="img/icon_white.svg" alt=""></div>
 </div>
 
-<div id="who" hidden><div class="box"><h3>¿Quién capta con este móvil?</h3><p>Se pregunta una vez. Cada contacto que guardes llevará tu nombre.</p><div class="names" id="who-names"></div><div class="otro"><input type="text" id="who-otro" placeholder="Otro nombre" autocapitalize="words"><button type="button" class="btn sm" id="who-ok">Vale</button></div></div></div>
+<div id="who" hidden><div class="box"><h3>Dime tu email</h3><p>Solo una vez. Con tu email de ZO, la app sabe quién eres y firma tus contactos.</p><div class="otro"><input type="email" id="who-otro" inputmode="email" autocapitalize="none" autocomplete="email" placeholder="nombre@zoskinhealth.com"><button type="button" class="btn sm" id="who-ok">Entrar</button></div><p id="who-err" class="err-txt" hidden>No reconozco ese email. Revísalo o escribe tu nombre.</p></div></div>
 
 <div id="toast" role="status"></div>
 
@@ -295,7 +296,12 @@
     eventos: ["GEDET 2026"],
     congresoFijo: true,          // true = no se puede cambiar desde el móvil
     fotos: { nuevoArriba:"img/top_mirada.jpg", nuevoAbajo:"img/bottom_polish.jpg", contactosArriba:"img/top_producto.jpg", contactosAbajo:"img/bottom_mano.jpg" },
-    equipo: ["Estel Cortés","Paula Cambra","Marina Granados","Jorge de Meer"],
+    equipo: [
+      { nombre:"Estel Cortés",    email:"ecortes@zoskinhealth.com" },
+      { nombre:"Paula Cambra",    email:"pcambra@zoskinhealth.com" },
+      { nombre:"Marina Granados", email:"mgranados@zoskinhealth.com" },
+      { nombre:"Jorge de Meer",   email:"jdemeer@zoskinhealth.com" }
+    ],
     territorios: [
       { nombre:"Atlantic Cluster", delegado:"Raúl Santana", email:"rsantana@zoskinhealth.com",
         provincias:["La Coruña","Lugo","Orense","Pontevedra","Asturias","León","Las Palmas","Santa Cruz de Tenerife"] },
@@ -315,8 +321,12 @@
     intereses: ["Apertura","Lanzamientos","Formación","Colaboración especial"],
     legal: "Datos de contacto profesional tratados por ZO Skin Health España para la relación comercial con la clínica. Derechos: privacidad@zoskinhealth.com."
   };
-  C.captadores = C.equipo.concat(C.territorios.map(function(t){ return t.delegado; }));
+  C.personas = C.equipo.concat(C.territorios.map(function(t){ return { nombre:t.delegado, email:t.email }; }));
+  C.captadores = C.personas.map(function(p){ return p.nombre; });
 
+  function actual(terr){ var t = C.territorios.find(function(x){ return x.nombre===terr; }); return t ? { delegado:t.delegado, email:t.email } : { delegado:'', email:'' }; }
+  function amDe(l){ var a = actual(l.territorio); return a.delegado || l.delegado || ''; }
+  function amEmailDe(l){ var a = actual(l.territorio); return a.email || l.delegadoEmail || ''; }
   function route(prov){
     for (var i=0;i<C.territorios.length;i++){ var t=C.territorios[i]; if (t.provincias.indexOf(prov)>=0) return t; }
     return { nombre:"Sin territorio asignado", delegado:"", email:"" };
@@ -379,13 +389,18 @@
   if (YO) lsSet('zo_leads_yo', YO);
   if (/[?&]yo=/.test(location.search) && history.replaceState) { try { history.replaceState(null, '', location.pathname); } catch(e){} }
   function renderYo(){ $('yo-name').textContent = YO || 'nadie todavía'; }
-  function askWho(){
-    $('who-names').innerHTML = C.captadores.map(function(n){ return '<button type="button" data-n="'+esc(n)+'">'+esc(n)+'</button>'; }).join('');
-    $('who').hidden = false;
-  }
+  function askWho(){ $('who-err').hidden = true; $('who').hidden = false; setTimeout(function(){ $('who-otro').focus(); }, 50); }
   function setYo(n){ YO = n; lsSet('zo_leads_yo', n); $('who').hidden = true; renderYo(); toast('Captas como ' + n + '.'); }
-  $('who-names').addEventListener('click', function(e){ var b=e.target.closest('button'); if (b) setYo(b.dataset.n); });
-  $('who-ok').addEventListener('click', function(){ var n=$('who-otro').value.trim(); if (n) setYo(n); });
+  function porEmail(v){
+    var e = slugName(v); if (!e) return null;
+    var hit = C.personas.find(function(p){ return slugName(p.email)===e; });
+    if (!hit && e.indexOf('@')>0){ var user = e.split('@')[0]; hit = C.personas.find(function(p){ return slugName(p.email).split('@')[0]===user; }); }
+    if (!hit && e.indexOf('@')<0){ hit = C.personas.find(function(p){ return slugName(p.nombre)===e || slugName(p.nombre).split(' ')[0]===e; }); }
+    return hit ? hit.nombre : null;
+  }
+  function tryWho(){ var v=$('who-otro').value.trim(); if (!v) return; var n = porEmail(v); if (n){ setYo(n); return; } if (v.indexOf('@')<0 && v.length>2){ setYo(v); return; } $('who-err').hidden = false; }
+  $('who-ok').addEventListener('click', tryWho);
+  $('who-otro').addEventListener('keydown', function(e){ if (e.key==='Enter'){ e.preventDefault(); tryWho(); } });
   $('yo-change').addEventListener('click', askWho);
 
   /* ---------- formulario ---------- */
@@ -467,7 +482,7 @@
   function filtered(){
     var q = FILTER.q.toLowerCase().trim();
     return vivos().filter(function(l){
-      if (FILTER.del && l.delegado !== FILTER.del) return false;
+      if (FILTER.del && amDe(l) !== FILTER.del) return false;
       if (FILTER.prov && l.provincia !== FILTER.prov) return false;
       if (FILTER.ev && l.evento !== FILTER.ev) return false;
       if (q && [l.nombre,l.clinica,l.ciudad,l.provincia,l.territorio,l.delegado,l.captador,l.email,l.telefono,l.notas].join(' ').toLowerCase().indexOf(q)<0) return false;
@@ -482,7 +497,7 @@
     return parts.length ? parts.join(' · ') : 'Nacional';
   }
   function renderChips(){
-    var by = {}; vivos().forEach(function(l){ by[l.delegado||'—'] = (by[l.delegado||'—']||0)+1; });
+    var by = {}; vivos().forEach(function(l){ by[amDe(l)||'—'] = (by[amDe(l)||'—']||0)+1; });
     $('chips').innerHTML = C.territorios.map(function(t){
       return '<button type="button" class="chip" data-del="'+esc(t.delegado)+'" aria-pressed="'+(FILTER.del===t.delegado)+'">'+esc(t.delegado.split(' ')[0])+' <span class="c">'+(by[t.delegado]||0)+'</span></button>';
     }).join('');
@@ -505,7 +520,7 @@
         + '<div class="n">'+esc(l.nombre || l.clinica)+'</div>'
         + (line2 ? '<div class="c">'+esc(line2)+'</div>' : '')
         + (contact ? '<div class="c">'+esc(contact)+'</div>' : '')
-        + '<div class="meta m"><b>'+esc(l.delegado||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo)+(l.colaboracion?' ('+esc(l.colaboracion)+')':''):'')+(l.captador?' · '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
+        + '<div class="meta m"><b>'+esc(amDe(l)||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo)+(l.colaboracion?' ('+esc(l.colaboracion)+')':''):'')+(l.captador?' · '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
         + '<div class="acts"><button class="btn sm" data-a="copy">Copiar ficha</button><button class="btn sm quiet" data-a="edit">Editar</button><button class="btn sm quiet del" data-a="ask">Eliminar</button>'
         + '<span class="confirm">¿Seguro? <button class="btn sm danger" data-a="del">Sí, eliminar</button><button class="btn sm quiet" data-a="no">No</button></span></div>'
         + '</div>';
@@ -521,7 +536,7 @@
   function leadText(l){
     return ['Contacto captado en ' + (l.evento||''),
       'Nombre: ' + (l.nombre||'-'), 'Clínica: ' + (l.clinica||'-'), 'Especialidad: ' + (l.especialidad||'-'),
-      'Ciudad / provincia: ' + [l.ciudad,l.provincia].filter(Boolean).join(', '), 'Territorio: ' + l.territorio + (l.delegado?' · '+l.delegado+' · '+l.delegadoEmail:''),
+      'Ciudad / provincia: ' + [l.ciudad,l.provincia].filter(Boolean).join(', '), 'Territorio: ' + l.territorio + ' · ' + amDe(l) + ' · ' + amEmailDe(l),
       'Teléfono: ' + (l.telefono||'-'), 'Email: ' + (l.email||'-'),
       'Estado: ' + (l.estado||'-'), 'Interesado en: ' + (l.motivo||'-') + (l.colaboracion ? ' · ' + l.colaboracion : ''), 'Información relevante: ' + (l.notas||'-'), 'Captado por: ' + (l.captador||'-') + ' · ' + fmtDate(l.ts)].join('\n');
   }
@@ -543,8 +558,8 @@
   function fallbackCopy(txt){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); }
 
   /* ---------- Excel: .xlsx real; en iPhone abre la hoja de Compartir ---------- */
-  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['delegado','Account manager'],['delegadoEmail','Email account manager'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['colaboracion','Colaboración: en qué'],['notas','Información relevante'],['captador','Captado por'],['id','ID']];
-  function cell(l, k){ var v = l[k]; if (k==='ts') return new Date(v).toLocaleString('es-ES'); return v==null ? '' : String(v); }
+  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['amActual','Account manager'],['amEmail','Email account manager'],['delegado','Account manager en captación'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['colaboracion','Colaboración: en qué'],['notas','Información relevante'],['captador','Captado por'],['id','ID']];
+  function cell(l, k){ if (k==='amActual') return amDe(l); if (k==='amEmail') return amEmailDe(l); var v = l[k]; if (k==='ts') return new Date(v).toLocaleString('es-ES'); return v==null ? '' : String(v); }
   function csv(rows){
     var q = function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; };
     var out = [COLS.map(function(c){ return q(c[1]); }).join(';')];
@@ -581,7 +596,7 @@
     var btn = this; btn.disabled = true;
     loadXLSX().then(function(){
       btn.disabled = false;
-      var rows = filtered().slice().sort(function(a,b){ return (a.delegado||'').localeCompare(b.delegado||'','es') || (a.provincia||'').localeCompare(b.provincia||'','es') || a.ts-b.ts; });
+      var rows = filtered().slice().sort(function(a,b){ return amDe(a).localeCompare(amDe(b),'es') || (a.provincia||'').localeCompare(b.provincia||'','es') || a.ts-b.ts; });
       if (!rows.length) return toast('No hay contactos que exportar.', true);
       var base = 'contactos_' + slug(filterLabel()) + '_' + new Date().toISOString().slice(0,10);
       try { entregar(base + '.xlsx', xlsx(rows), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); }
