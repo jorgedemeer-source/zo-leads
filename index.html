@@ -19,6 +19,14 @@
   img{max-width:100%;}
   [hidden]{display:none!important;}
   .hero .wrap{padding-top:calc(20px + env(safe-area-inset-top,0px));}
+  #inst{position:fixed; inset:0; z-index:61; background:var(--cobalt); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
+  #inst .wm{height:44px; width:auto;}
+  #inst .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:18px;}
+  #inst h2{font-size:1.7rem; font-weight:300; text-align:center; line-height:1.1;}
+  #inst ol{margin:0; padding-left:22px; font-size:1.05rem; font-weight:300; line-height:1.5; display:flex; flex-direction:column; gap:10px;}
+  #inst ol b{font-weight:400;}
+  #inst .icon{width:72px; height:72px; border-radius:16px; box-shadow:0 8px 24px rgba(0,11,65,.4);}
+  #inst .skip{background:none; border:0; color:#fff; opacity:.75; text-decoration:underline; font-size:.95rem; padding:10px;}
   #who{position:fixed; inset:0; z-index:60; background:var(--cobalt); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
   #who .wm{height:44px; width:auto;}
   #who .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:14px;}
@@ -267,6 +275,19 @@
 <div class="band" style="margin-bottom:0"><img id="band-img" class="bg" src="img/bottom_polish.jpg" alt=""><span class="cap" id="band-cap">The system for skin transformation</span><img class="sig" src="img/icon_white.svg" alt=""></div>
 </div>
 
+<div id="inst" hidden>
+  <img class="wm" src="img/wordmark_white.svg" alt="ZO Skin Health · By Zein Obagi MD">
+  <div class="mid">
+    <h2>Guarda ZO Leads en tu iPhone</h2>
+    <ol>
+      <li>Toca <b>Compartir</b>, el cuadrado con la flecha hacia arriba, abajo en Safari.</li>
+      <li>Baja y toca <b>Añadir a pantalla de inicio</b>.</li>
+      <li>Toca <b>Añadir</b>. Ya tienes la app; ábrela desde el icono.</li>
+    </ol>
+    <img class="icon" src="img/icon-192.png" alt="">
+  </div>
+  <button type="button" class="skip" id="inst-skip">Seguir en Safari por ahora</button>
+</div>
 <div id="who" hidden>
   <img class="wm" src="img/wordmark_white.svg" alt="ZO Skin Health · By Zein Obagi MD">
   <form class="mid" id="who-form" autocomplete="off">
@@ -646,7 +667,10 @@
   $('install-x').addEventListener('click', function(){ $('install').hidden = true; lsSet('zo_leads_install_x','1'); });
   var esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
   var instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-  if (esIOS && !instalada && !lsGet('zo_leads_install_x')) { $('install-txt').innerHTML = 'Guárdala como app: toca <b>Compartir</b> (el cuadrado con la flecha) y luego <b>Añadir a pantalla de inicio</b>.'; $('install-btn').hidden = true; $('install').hidden = false; }
+  var saltado = false; try { saltado = sessionStorage.getItem('zo_leads_inst_skip')==='1'; } catch(e){}
+  if (esIOS && !instalada && !saltado) { $('inst').hidden = false; }
+  $('inst-skip').addEventListener('click', function(){ $('inst').hidden = true; try { sessionStorage.setItem('zo_leads_inst_skip','1'); } catch(e){}
+    $('install-txt').innerHTML = 'Recuerda guardarla como app: <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') { navigator.serviceWorker.register('sw.js').catch(function(){}); }
 })();
 </script>
