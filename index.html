@@ -19,6 +19,18 @@
   img{max-width:100%;}
   [hidden]{display:none!important;}
   .hero .wrap{padding-top:calc(20px + env(safe-area-inset-top,0px));}
+  #who{position:fixed; inset:0; z-index:60; background:rgba(0,11,65,.72); display:flex; align-items:flex-end; justify-content:center; padding:16px;}
+  #who .box{background:var(--white); border-radius:14px; padding:22px 18px calc(18px + env(safe-area-inset-bottom,0px)); width:100%; max-width:520px;}
+  #who h3{font-size:1.5rem; font-weight:300; margin:0 0 4px;}
+  #who p{margin:0 0 16px; color:var(--muted); font-size:.92rem;}
+  #who .names{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  #who .names button{border:1px solid var(--hair); background:var(--white); border-radius:8px; padding:14px 10px; font-size:1rem; font-weight:300; color:var(--fg); min-height:52px;}
+  #who .names button:hover{border-color:var(--cobalt); color:var(--cobalt);}
+  #who .otro{display:flex; gap:8px; margin-top:12px;}
+  #who .otro input{flex:1;}
+  .yo{display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--white); border-radius:12px; padding:14px 18px; margin-bottom:12px; font-size:.95rem;}
+  .yo b{font-weight:400; color:var(--cobalt);}
+  .yo button{background:none; border:0; color:var(--muted); text-decoration:underline; font-size:.88rem; padding:0;}
   #install{display:flex; align-items:center; gap:12px; background:var(--white); border-radius:12px; padding:12px 14px; margin:14px 0 0; font-size:.9rem;}
   #install .x{margin-left:auto; background:none; border:0; color:var(--cobalt); text-decoration:underline; font-size:.9rem;}
 
@@ -173,6 +185,7 @@
   <div id="install" hidden><span>Añade <b>ZO Leads</b> a la pantalla de inicio para usarla como app.</span><button class="btn sm" id="install-btn">Instalar</button><button class="x" id="install-x">Cerrar</button></div>
 
   <section id="s-nuevo" class="on">
+    <div class="yo"><span>Captas como <b id="yo-name">—</b></span><button type="button" id="yo-change">Cambiar</button></div>
     <form id="f" autocomplete="off" novalidate>
       <input type="hidden" id="f-id">
 
@@ -190,10 +203,8 @@
         <div class="field"><label for="f-ciudad">Ciudad</label><input type="text" id="f-ciudad" autocapitalize="words"></div>
         <div class="field"><label for="f-motivo">Interesado en</label><select id="f-motivo"></select></div>
         <div class="field"><label for="f-notas">Notas</label><textarea id="f-notas" placeholder="Qué le interesó, qué le prometimos, cuándo contactar…"></textarea></div>
-        <div class="row2">
-          <div class="field"><label for="f-captador">Captado por</label><select id="f-captador"></select></div>
-          <div class="field"><label for="f-evento">Congreso</label><select id="f-evento"></select></div>
-        </div>
+        <div class="field"><label for="f-evento">Congreso</label><select id="f-evento"></select></div>
+        <select id="f-captador" hidden></select>
         <div class="field" id="f-evento-otro-wrap" hidden><label for="f-evento-otro">Nombre del congreso</label><input type="text" id="f-evento-otro" autocapitalize="words" placeholder="Ej. AEDV 2027"></div>
       </div>
 
@@ -239,6 +250,8 @@
 
 <div class="band" style="margin-bottom:0"><img id="band-img" class="bg" src="img/bottom_polish.jpg" alt=""><span class="cap" id="band-cap">The system for skin transformation</span><img class="sig" src="img/icon_white.svg" alt=""></div>
 </div>
+
+<div id="who" hidden><div class="box"><h3>¿Quién capta con este móvil?</h3><p>Se pregunta una vez. Cada contacto que guardes llevará tu nombre.</p><div class="names" id="who-names"></div><div class="otro"><input type="text" id="who-otro" placeholder="Otro nombre" autocapitalize="words"><button type="button" class="btn sm" id="who-ok">Vale</button></div></div></div>
 
 <div id="toast" role="status"></div>
 
@@ -339,6 +352,27 @@
   function save(l){ upsertLocal(l); QUEUE.push({ action:'upsert', lead:l }); persist(); renderList(); flush(); }
   function remove(id){ var l = LEADS.find(function(x){ return x.id===id; }); if (!l) return; l.borrado=true; l.editado=Date.now(); QUEUE.push({ action:'upsert', lead:l }); persist(); renderList(); flush(); }
 
+  /* ---------- quién capta con este móvil ---------- */
+  function slugName(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim(); }
+  function porEnlace(){
+    var m = /[?&]yo=([^&#]+)/.exec(location.search); if (!m) return null;
+    var q = slugName(decodeURIComponent(m[1].replace(/\+/g,' ')));
+    var hit = C.captadores.find(function(n){ return slugName(n)===q; }) || C.captadores.find(function(n){ return slugName(n).split(' ')[0]===q; });
+    return hit || decodeURIComponent(m[1].replace(/\+/g,' '));
+  }
+  var YO = porEnlace() || lsGet('zo_leads_yo') || '';
+  if (YO) lsSet('zo_leads_yo', YO);
+  if (/[?&]yo=/.test(location.search) && history.replaceState) { try { history.replaceState(null, '', location.pathname); } catch(e){} }
+  function renderYo(){ $('yo-name').textContent = YO || 'nadie todavía'; }
+  function askWho(){
+    $('who-names').innerHTML = C.captadores.map(function(n){ return '<button type="button" data-n="'+esc(n)+'">'+esc(n)+'</button>'; }).join('');
+    $('who').hidden = false;
+  }
+  function setYo(n){ YO = n; lsSet('zo_leads_yo', n); $('who').hidden = true; renderYo(); toast('Captas como ' + n + '.'); }
+  $('who-names').addEventListener('click', function(e){ var b=e.target.closest('button'); if (b) setYo(b.dataset.n); });
+  $('who-ok').addEventListener('click', function(){ var n=$('who-otro').value.trim(); if (n) setYo(n); });
+  $('yo-change').addEventListener('click', askWho);
+
   /* ---------- formulario ---------- */
   var FILTER = { del:'', prov:'', ev:'', q:'' };
   fill('f-esp', C.especialidades, 'Elegir…'); fill('f-motivo', C.motivos, 'Elegir…'); fill('f-captador', C.captadores.concat(['Otro']), 'Elegir…');
@@ -363,7 +397,7 @@
       evento: ev, nombre: $('f-nombre').value.trim(), clinica: $('f-clinica').value.trim(), especialidad: $('f-esp').value,
       provincia: prov, ciudad: $('f-ciudad').value.trim(), territorio: t.nombre, delegado: t.delegado, delegadoEmail: t.email,
       telefono: $('f-tel').value.trim(), email: $('f-email').value.trim().toLowerCase(),
-      motivo: $('f-motivo').value, notas: $('f-notas').value.trim(), captador: $('f-captador').value
+      motivo: $('f-motivo').value, notas: $('f-notas').value.trim(), captador: YO || ''
     };
   }
   var REQ = ['f-evento','f-evento-otro','f-nombre','f-clinica','f-esp','f-prov','f-tel','f-email'];
@@ -380,7 +414,6 @@
   function resetForm(){
     $('f').reset(); $('f-id').value='';
     $('f-evento').value = lsGet('zo_leads_evento') || C.evento; $('f-evento-otro-wrap').hidden = $('f-evento').value !== 'Otro congreso';
-    var last = lsGet('zo_leads_captador'); if (last) $('f-captador').value = last;
     REQ.forEach(function(i){ $(i).classList.remove('err'); });
     $('hero-title').textContent='Nuevo contacto'; $('f-save').textContent='Guardar contacto'; $('f-editacts').hidden=true;
     updateRoute();
@@ -389,15 +422,15 @@
     $('f-id').value=l.id; $('f-nombre').value=l.nombre||''; $('f-clinica').value=l.clinica||''; $('f-esp').value=l.especialidad||'';
     if (C.eventos.indexOf(l.evento)>=0){ $('f-evento').value=l.evento; $('f-evento-otro-wrap').hidden=true; } else { $('f-evento').value='Otro congreso'; $('f-evento-otro').value=l.evento||''; $('f-evento-otro-wrap').hidden=false; }
     $('f-prov').value=l.provincia||''; $('f-ciudad').value=l.ciudad||''; $('f-tel').value=l.telefono||''; $('f-email').value=l.email||'';
-    $('f-motivo').value=l.motivo||''; $('f-notas').value=l.notas||''; $('f-captador').value=l.captador||'';
+    $('f-motivo').value=l.motivo||''; $('f-notas').value=l.notas||'';
     $('f-save').textContent='Guardar cambios'; $('f-editacts').hidden=false;
     updateRoute(); show('nuevo'); $('hero-title').textContent='Editar contacto';
   }
   $('f').addEventListener('submit', function(e){
     e.preventDefault();
+    if (!YO){ askWho(); toast('Dinos quién eres y vuelve a guardar.', true); return; }
     var d = readForm(); var bad = validate(d);
     if (bad.length){ toast('Falta: ' + bad.join(', ') + '.', true); var first=document.querySelector('.err'); if(first) first.scrollIntoView({block:'center',behavior:'smooth'}); return; }
-    if (d.captador) lsSet('zo_leads_captador', d.captador);
     lsSet('zo_leads_evento', $('f-evento').value);
     var id = $('f-id').value;
     if (id){
@@ -551,7 +584,8 @@
   Array.prototype.forEach.call(document.querySelectorAll('nav button'), function(b){ b.addEventListener('click', function(){ show(b.dataset.s); }); });
 
   /* ---------- arranque ---------- */
-  resetForm(); renderList();
+  resetForm(); renderList(); renderYo();
+  if (!YO) askWho();
   if (SYNC_URL){ setDot('', 'conectando'); pull(); flush(); setInterval(pull, 45000); window.addEventListener('focus', pull); window.addEventListener('online', function(){ flush(); pull(); }); }
   else { setDot('ok', 'solo este móvil'); }
 
