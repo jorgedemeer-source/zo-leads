@@ -593,7 +593,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('nav button'), function(b){ if (b.dataset.s===s) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
     $('hero-title').textContent = s==='leads' ? 'Contactos captados' : ($('f-id').value ? 'Editar contacto' : 'Nuevo contacto');
     $('hero-ev').textContent = s==='leads' ? 'Base de datos del equipo' : 'Captación de leads';
-    $('hero-brand-img').src = s==='leads' ? 'img/wordmark_cobalt.svg' : 'img/wordmark_white.svg';
+    $('hero-img').style.objectPosition = s==='leads' ? 'center 78%' : 'center top';
     $('hero-img').src = s==='leads' ? C.fotos.contactosArriba : C.fotos.nuevoArriba;
     $('band-img').src = s==='leads' ? C.fotos.contactosAbajo : C.fotos.nuevoAbajo;
     window.scrollTo(0,0);
