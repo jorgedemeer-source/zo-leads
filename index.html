@@ -27,7 +27,8 @@
   #inst .top::after{content:""; position:absolute; left:0; right:0; bottom:0; height:38%; background:linear-gradient(180deg, rgba(224,220,215,0) 0%, var(--inst-bg,#E0DCD7) 100%);}
   #inst .wm{height:54px; width:auto;}
   #inst .mid{width:100%; max-width:440px; display:flex; flex-direction:column; gap:14px; padding:6vh 22px 0;}
-  #inst h2{font-size:1.85rem; font-weight:300; line-height:1.08; color:var(--cobalt); margin-bottom:6px;}
+  #inst h2{font-size:1.85rem; font-weight:300; line-height:1.08; color:var(--cobalt); margin-bottom:0;}
+  #inst .sub{font-size:1rem; font-weight:300; line-height:1.4; color:var(--fg2); margin:-4px 0 6px;}
   #inst .step{display:grid; grid-template-columns:44px 1fr; gap:14px; align-items:center; font-size:1rem; font-weight:300; line-height:1.4; color:var(--fg);}
   #inst .step b{font-weight:400; color:var(--cobalt);}
   #inst .ic{width:44px; height:44px; border-radius:11px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,11,65,.12);}
@@ -289,11 +290,12 @@
   <div class="wmband"><img class="wm" src="img/wordmark_cobalt.svg" alt="ZO Skin Health · By Zein Obagi MD"></div>
   <div class="top"><img class="pic" id="inst-pic" src="img/inst_gentle.jpg" alt=""></div>
   <div class="mid">
-    <h2>Guarda ZO Leads<br>en tu iPhone</h2>
+    <h2>Guarda ZO Leads<br>como aplicación</h2>
+    <p class="sub">No está en la App Store: se guarda desde Safari. Cuatro toques y aparece en tu pantalla de inicio, con el resto de tus aplicaciones.</p>
     <div class="step" id="inst-s0"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4" fill="#002C8E" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="#002C8E" stroke="none"/><circle cx="18" cy="12" r="1.4" fill="#002C8E" stroke="none"/></svg></span><span>Toca los <b>tres puntos</b>, abajo a la derecha de Safari.</span></div>
     <div class="step" id="inst-s1"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M7 10H5.5A1.5 1.5 0 0 0 4 11.5v8A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></span><span id="inst-s1t">En el menú que se abre, toca <b>Compartir</b> (el cuadrado con la flecha).</span></div>
     <div class="step"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><span>Baja por la lista hasta ver <b>Añadir a pantalla de inicio</b> y tócalo.</span></div>
-    <div class="step"><span class="ic"><img src="img/icon-192.png" alt=""></span><span>Arriba a la derecha, toca <span class="k">Añadir</span>. Ya tienes el icono en tu pantalla: ábrela siempre desde ahí.</span></div>
+    <div class="step"><span class="ic"><img src="img/icon-192.png" alt=""></span><span>Arriba a la derecha, toca <span class="k">Añadir</span>. Listo: <b>ZO Leads</b> ya está en tu pantalla de inicio como una app más. Ábrela siempre desde ese icono.</span></div>
     <div class="step wa"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span><span>¿Lo has abierto desde WhatsApp y no ves la barra de Safari? Toca antes esta brújula, abajo a la derecha: <b>Abrir en Safari</b>.</span></div>
   </div>
   <button type="button" class="skip" id="inst-skip">Seguir en Safari por ahora</button>
