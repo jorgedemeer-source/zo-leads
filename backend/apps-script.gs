@@ -2,9 +2,9 @@
    La hoja es la base de datos compartida y, a la vez, el Excel del equipo.
    Instalación: ver LEEME.md en esta carpeta. */
 var HOJA = 'Contactos';
-var COLS = ['id','ts','editado','borrado','evento','nombre','clinica','especialidad','ciudad','provincia','territorio','delegado','delegadoEmail','telefono','email','motivo','notas','captador'];
+var COLS = ['id','ts','editado','borrado','evento','nombre','clinica','especialidad','ciudad','provincia','territorio','delegado','delegadoEmail','telefono','email','estado','motivo','colaboracion','notas','captador'];
 
-var TITULOS = ['ID','Fecha','Editado','Borrado','Congreso','Nombre','Clínica','Especialidad','Ciudad','Provincia','Territorio','Account manager','Email account manager','Teléfono','Email','Interesado en','Información relevante','Captado por'];
+var TITULOS = ['ID','Fecha','Editado','Borrado','Congreso','Nombre','Clínica','Especialidad','Ciudad','Provincia','Territorio','Account manager','Email account manager','Teléfono','Email','Estado','Interesado en','Colaboración: en qué','Información relevante','Captado por'];
 var TERRITORIOS = [['Atlantic Cluster','Raúl Santana'],['North Corridor','Nerea Iratzagorria'],['North Mediterranean Cluster','Chus Marques'],['Central Hub','Mar Zorrilla'],['East Corridor','Inés Justamante'],['South Division','Karmen Arellano']];
 var COBALTO = '#002C8E', PERLA = '#E3E3E3', BLANCO = '#FFFFFF', NEGRO = '#151515';
 
@@ -24,7 +24,7 @@ function vestir_(ss, sh) {
   sh.getRange(1, 1, 1, n).setBackground(COBALTO).setFontColor(BLANCO).setFontFamily('Inter').setFontSize(10).setFontWeight('bold').setVerticalAlignment('middle');
   sh.setRowHeight(1, 34);
   sh.getRange(2, 1, 2000, n).setFontFamily('Inter').setFontSize(10).setFontColor(NEGRO).setVerticalAlignment('middle');
-  var anchos = [90, 140, 90, 70, 110, 220, 220, 150, 130, 130, 200, 170, 220, 120, 220, 160, 320, 170];
+  var anchos = [90, 140, 90, 70, 110, 220, 220, 150, 130, 130, 200, 170, 220, 120, 220, 110, 160, 220, 320, 170];
   for (var i = 0; i < n; i++) sh.setColumnWidth(i + 1, anchos[i] || 120);
   sh.hideColumns(1); sh.hideColumns(3);                     // ID y Editado son técnicas
   var banding = sh.getRange(1, 1, 2000, n).getBandings();
