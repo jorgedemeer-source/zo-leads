@@ -21,7 +21,7 @@
   img{max-width:100%;}
   [hidden]{display:none!important;}
   #inst{position:fixed; inset:0; z-index:61; background:var(--inst-bg,#E0DCD7); color:var(--cobalt); overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; align-items:center; padding:0 0 calc(22px + env(safe-area-inset-bottom,0px));}
-  #inst .wmband{width:100%; flex:none; background:var(--inst-bg-top,#E3DFDB); padding:calc(26px + env(safe-area-inset-top,0px)) 0 10px; display:flex; justify-content:center;}
+  #inst .wmband{width:100%; flex:none; background:var(--inst-bg-top,#E3DFDB); padding:calc(32px + env(safe-area-inset-top,0px)) 30px 12px; display:flex; justify-content:flex-start;}
   #inst .top{position:relative; width:100%; height:40vh; min-height:250px; max-height:420px; flex:none;}
   #inst .top img.pic{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%; display:block;}
   #inst .top::after{content:""; position:absolute; left:0; right:0; bottom:0; height:38%; background:linear-gradient(180deg, rgba(224,220,215,0) 0%, var(--inst-bg,#E0DCD7) 100%);}
@@ -36,9 +36,9 @@
   #inst .step .k{display:inline-block; background:#fff; color:var(--cobalt); font-weight:400; border-radius:6px; padding:1px 8px; white-space:nowrap;}
   #inst .wa{font-size:.9rem; color:var(--fg2); border-top:1px solid rgba(0,44,142,.15); padding-top:12px; margin-top:4px;}
   #inst .skip{background:none; border:0; color:var(--cobalt); opacity:.8; text-decoration:underline; font-size:.95rem; padding:18px 10px 4px; margin-top:auto;}
-  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/who_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
+  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/who_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(32px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
   #who::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.45) 0%, rgba(0,11,65,.5) 55%, rgba(0,11,65,.82) 100%);}
-  #who .wm{height:44px; width:auto; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
+  #who .wm{height:54px; width:auto; align-self:flex-start; margin-left:6px; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
   #who .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:14px;}
   #who label{font-weight:300; font-size:1.25rem; text-align:center; letter-spacing:-.01em;}
   #who .mailrow{display:flex; align-items:center; gap:10px; width:100%;}
@@ -693,7 +693,7 @@
   else if (esIOS){ $('inst-s1').querySelector('span:last-child').innerHTML = 'Toca los <b>tres puntos</b>, abajo a la derecha de Safari. Si en su lugar ves el icono de <b>Compartir</b> (cuadrado con flecha), tócalo.'; }
   if (esIOS && !instalada && !saltado) { $('inst').hidden = false; }
   $('inst-skip').addEventListener('click', function(){ $('inst').hidden = true; try { sessionStorage.setItem('zo_leads_inst_skip','1'); } catch(e){}
-    $('install-txt').innerHTML = 'Recuerda guardarla como app: <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
+    $('install-txt').innerHTML = 'Recuerda guardarla como app: <b>' + (iosVer && iosVer < 26 ? 'Compartir' : 'tres puntos') + '</b> → <b>Añadir a pantalla de inicio</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') { navigator.serviceWorker.register('sw.js').catch(function(){}); }
 })();
 </script>
