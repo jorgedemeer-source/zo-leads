@@ -39,7 +39,7 @@
   #inst .skip{background:none; border:0; color:var(--cobalt); opacity:.8; text-decoration:underline; font-size:.95rem; padding:18px 10px 4px; margin-top:auto;}
   #tour{position:fixed; inset:0; z-index:59; background:var(--pearl); color:var(--fg); overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; align-items:center; padding:0 0 calc(22px + env(safe-area-inset-bottom,0px));}
   #tour .hero2{position:relative; width:100%; height:38vh; min-height:240px; max-height:400px; flex:none; overflow:hidden; background:var(--cobalt);}
-  #tour .hero2 img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;}
+  #tour .hero2 img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:70% center;}
   #tour .hero2::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,44,142,.15) 0%, rgba(0,11,65,.55) 100%);}
   #tour .hero2 .wm{position:absolute; left:30px; top:calc(32px + env(safe-area-inset-top,0px)); height:54px; width:auto; z-index:1; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
   #tour .hero2 h2{position:absolute; left:30px; right:30px; bottom:26px; z-index:1; color:#fff; font-size:2rem; line-height:1.05; text-shadow:0 1px 10px rgba(0,11,65,.45);}
@@ -119,6 +119,7 @@
   .band::after{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.12) 0%, rgba(0,11,65,.35) 100%);}
   .band .sig{position:absolute; inset:auto; left:20px; top:18px; height:34px; width:auto; z-index:1; filter:drop-shadow(0 1px 8px rgba(0,11,65,.4));}
   .band .cap{position:absolute; left:20px; bottom:20px; font-family:var(--fm); font-weight:300; font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:#fff; opacity:.9;}
+  .guia{position:absolute; top:calc(20px + 12px); right:18px; z-index:2; background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.7); border-radius:999px; padding:7px 14px; font-size:.82rem; font-weight:400; letter-spacing:.02em; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);}
   #dot{position:absolute; top:90px; right:18px; max-width:55%; text-align:right; font-family:var(--fm); font-weight:300; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-dim); display:flex; align-items:center; gap:6px;}
   #dot i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); display:inline-block;}
   #dot.ok i{background:#7FE0A6;}
@@ -223,6 +224,7 @@
 <div class="page">
 <div class="hero">
   <img id="hero-img" src="img/top_mirada.jpg" alt="">
+  <button type="button" class="guia" id="b-guia">Guía</button>
   <div id="dot"><i></i><span>conectando</span></div>
   <div class="wrap">
     <div class="brand"><img id="hero-brand-img" src="img/wordmark_white.svg" alt="ZO Skin Health · By Zein Obagi MD"></div>
@@ -325,7 +327,7 @@
   <button type="button" class="skip" id="inst-skip">Seguir en Safari por ahora</button>
 </div>
 <div id="tour" hidden>
-  <div class="hero2"><img src="img/top_mirada.jpg" alt=""><img class="wm" src="img/wordmark_white.svg" alt="ZO Skin Health · By Zein Obagi MD"><h2>Así funciona<br>ZO Leads</h2></div>
+  <div class="hero2"><img src="img/tour_macro.jpg" alt=""><img class="wm" src="img/wordmark_white.svg" alt="ZO Skin Health · By Zein Obagi MD"><h2>Así funciona<br>ZO Leads</h2></div>
   <div class="mid">
     <div class="blk"><div class="n">01</div><h3>Guarda un contacto</h3><p>Rellena los campos con asterisco y toca <b>Guardar contacto</b>. La provincia asigna sola el territorio y el account manager.</p>
       <div class="mini"><span>Nombre o clínica</span><span>Especialidad</span><span>Provincia</span><span>Teléfono</span><span class="opt">Email</span><span class="opt">Estado</span><span class="opt">Interesado en</span><span class="opt">Información relevante</span></div></div>
@@ -485,6 +487,7 @@
   function askWho(){ $('who-err').hidden = true; $('who-otro').value=''; $('who').hidden = false; setTimeout(function(){ $('who-otro').focus(); }, 50); }
   function setYo(n){ YO = n; lsSet('zo_leads_yo', n); $('who').hidden = true; renderYo(); if (!lsGet('zo_leads_tour')) $('tour').hidden = false; else toast('Hola, ' + n.split(' ')[0] + '. Tus contactos llevarán tu nombre.'); }
   $('tour-ok').addEventListener('click', function(){ $('tour').hidden = true; lsSet('zo_leads_tour','1'); window.scrollTo(0,0); });
+  $('b-guia').addEventListener('click', function(){ $('tour').scrollTo(0,0); $('tour').hidden = false; });
   function porEmail(v){
     var user = slugName(v).replace(/\s+/g,'').split('@')[0]; if (!user) return null;
     var hit = C.personas.find(function(p){ return slugName(p.email).split('@')[0]===user; });
