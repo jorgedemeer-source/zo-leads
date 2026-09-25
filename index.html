@@ -577,7 +577,7 @@
         + '<div class="n">'+esc(l.nombre || l.clinica)+'</div>'
         + (line2 ? '<div class="c">'+esc(line2)+'</div>' : '')
         + (contact ? '<div class="c">'+esc(contact)+'</div>' : '')
-        + '<div class="meta m"><b>'+esc(amDe(l)||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo)+(l.colaboracion?' ('+esc(l.colaboracion)+')':''):'')+(l.captador?' · '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
+        + '<div class="meta m"><b>'+esc(amDe(l)||l.territorio)+'</b> · '+esc(l.evento||'')+(l.estado?' · '+esc(l.estado):'')+(l.motivo?' · '+esc(l.motivo)+(l.colaboracion?' ('+esc(l.colaboracion)+')':''):'')+(l.captador?' · captado por '+esc(l.captador):'')+' · '+fmtDate(l.ts)+'</div>'
         + '<div class="acts"><button class="btn sm" data-a="copy">Copiar ficha</button><button class="btn sm quiet" data-a="edit">Editar</button><button class="btn sm quiet del" data-a="ask">Eliminar</button>'
         + '<span class="confirm">¿Seguro? <button class="btn sm danger" data-a="del">Sí, eliminar</button><button class="btn sm quiet" data-a="no">No</button></span></div>'
         + '</div>';
