@@ -3,7 +3,7 @@
 Web instalable para captar contactos de profesionales en congresos y repartirlos por account manager.
 ZO Skin Health España.
 
-- **URL de la app:** https://jorgedemeer-source.github.io/zo-leads/
+- **URL de la app:** https://zoskinhealth-es.github.io/zo-leads/
   (requiere GitHub Pages activado: Settings → Pages → Branch `main` / root).
 - **Instalar en el iPhone:** abrir la URL en Safari → Compartir → Añadir a pantalla de inicio.
 - **Datos compartidos:** ver `backend/LEEME.md`. Sin conectar la hoja, cada móvil guarda solo lo suyo.
