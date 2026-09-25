@@ -27,8 +27,9 @@
   #inst ol b{font-weight:400;}
   #inst .icon{width:72px; height:72px; border-radius:16px; box-shadow:0 8px 24px rgba(0,11,65,.4);}
   #inst .skip{background:none; border:0; color:#fff; opacity:.75; text-decoration:underline; font-size:.95rem; padding:10px;}
-  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
-  #who .wm{height:44px; width:auto;}
+  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/bottom_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
+  #who::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.55) 0%, rgba(0,11,65,.55) 55%, rgba(0,11,65,.85) 100%);}
+  #who .wm{height:44px; width:auto; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
   #who .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:14px;}
   #who label{font-weight:300; font-size:1.25rem; text-align:center; letter-spacing:-.01em;}
   #who .mailrow{display:flex; align-items:center; gap:10px; width:100%;}
@@ -588,7 +589,7 @@
   function fallbackCopy(txt){ var ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); }
 
   /* ---------- Excel: .xlsx real; en iPhone abre la hoja de Compartir ---------- */
-  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['amActual','Account manager'],['amEmail','Email account manager'],['delegado','Account manager en captación'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['colaboracion','Colaboración: en qué'],['notas','Información relevante'],['captador','Captado por'],['id','ID']];
+  var COLS = [['evento','Congreso'],['ts','Fecha'],['nombre','Nombre'],['clinica','Clínica'],['especialidad','Especialidad'],['ciudad','Ciudad'],['provincia','Provincia'],['territorio','Territorio'],['amActual','Account manager'],['telefono','Teléfono'],['email','Email'],['estado','Estado'],['motivo','Interesado en'],['colaboracion','Colaboración: en qué'],['notas','Información relevante'],['captador','Captado por']];
   function cell(l, k){ if (k==='amActual') return amDe(l); if (k==='amEmail') return amEmailDe(l); var v = l[k]; if (k==='ts') return new Date(v).toLocaleString('es-ES'); return v==null ? '' : String(v); }
   function csv(rows){
     var q = function(v){ return '"' + String(v).replace(/"/g,'""') + '"'; };
@@ -599,7 +600,7 @@
   function xlsx(rows){
     var aoa = [COLS.map(function(c){ return c[1]; })].concat(rows.map(function(l){ return COLS.map(function(c){ return cell(l,c[0]); }); }));
     var ws = XLSX.utils.aoa_to_sheet(aoa);
-    ws['!cols'] = COLS.map(function(c){ return { wch: c[0]==='notas' ? 40 : (c[0]==='nombre'||c[0]==='clinica'||c[0]==='delegadoEmail'||c[0]==='email') ? 28 : 16 }; });
+    ws['!cols'] = COLS.map(function(c){ return { wch: c[0]==='notas' ? 40 : (c[0]==='nombre'||c[0]==='clinica'||c[0]==='email') ? 28 : 16 }; });
     var wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Contactos');
     return XLSX.write(wb, { bookType:'xlsx', type:'array' });
   }
