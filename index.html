@@ -291,9 +291,8 @@
   <div class="top"><img class="pic" id="inst-pic" src="img/inst_gentle.jpg" alt=""></div>
   <div class="mid">
     <h2>Guarda ZO Leads<br>como aplicación</h2>
-    <p class="sub">No está en la App Store: se guarda desde Safari. Cuatro toques y aparece en tu pantalla de inicio, con el resto de tus aplicaciones.</p>
-    <div class="step" id="inst-s0"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.4" fill="#002C8E" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="#002C8E" stroke="none"/><circle cx="18" cy="12" r="1.4" fill="#002C8E" stroke="none"/></svg></span><span>Toca los <b>tres puntos</b>, abajo a la derecha de Safari.</span></div>
-    <div class="step" id="inst-s1"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M7 10H5.5A1.5 1.5 0 0 0 4 11.5v8A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></span><span id="inst-s1t">En el menú que se abre, toca <b>Compartir</b> (el cuadrado con la flecha).</span></div>
+    <p class="sub">No está en la App Store: se guarda desde Safari. Tres toques y aparece en tu pantalla de inicio, con el resto de tus aplicaciones.</p>
+    <div class="step"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M7 10H5.5A1.5 1.5 0 0 0 4 11.5v8A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></span><span>Toca <b>Compartir</b>, el cuadrado con la flecha, en la barra de abajo de Safari. Si ahí solo ves <b>tres puntos</b>, tócalos: Compartir es lo primero del menú.</span></div>
     <div class="step"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><span>Baja por la lista hasta ver <b>Añadir a pantalla de inicio</b> y tócalo.</span></div>
     <div class="step"><span class="ic"><img src="img/icon-192.png" alt=""></span><span>Arriba a la derecha, toca <span class="k">Añadir</span>. Listo: <b>ZO Leads</b> ya está en tu pantalla de inicio como una app más. Ábrela siempre desde ese icono.</span></div>
     <div class="step wa"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg></span><span>¿Lo has abierto desde WhatsApp y no ves la barra de Safari? Toca antes esta brújula, abajo a la derecha: <b>Abrir en Safari</b>.</span></div>
@@ -700,11 +699,9 @@
   var instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   var saltado = false; try { saltado = sessionStorage.getItem('zo_leads_inst_skip')==='1'; } catch(e){}
   if (C.fotos.instalar){ $('inst-pic').src = C.fotos.instalar; document.documentElement.style.setProperty('--inst-bg', C.fotos.instalarFondo || '#E0DCD7'); document.documentElement.style.setProperty('--inst-bg-top', C.fotos.instalarFondoArriba || C.fotos.instalarFondo || '#E7E3DA'); }
-  var iosVer = (function(){ var m = /OS (\d+)_/.exec(navigator.userAgent); return m ? Number(m[1]) : 0; })();
-  if (esIOS && iosVer && iosVer < 26){ $('inst-s0').hidden = true; $('inst-s1t').innerHTML = 'Toca este icono, <b>Compartir</b>, en la barra de abajo de Safari.'; }   // barra antigua: sin el paso de los tres puntos
   if (esIOS && !instalada && !saltado) { $('inst').hidden = false; }
   $('inst-skip').addEventListener('click', function(){ $('inst').hidden = true; try { sessionStorage.setItem('zo_leads_inst_skip','1'); } catch(e){}
-    $('install-txt').innerHTML = 'Recuerda guardarla como app: ' + (iosVer && iosVer < 26 ? '' : '<b>tres puntos</b> → ') + '<b>Compartir</b> → <b>Añadir a pantalla de inicio</b> → <b>Añadir</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
+    $('install-txt').innerHTML = 'Recuerda guardarla como app: <b>Compartir</b> (o <b>tres puntos</b> → Compartir) → <b>Añadir a pantalla de inicio</b> → <b>Añadir</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
   if ('serviceWorker' in navigator && location.protocol !== 'file:') { navigator.serviceWorker.register('sw.js').catch(function(){}); }
 })();
 </script>

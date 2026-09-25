@@ -1,5 +1,5 @@
 /* ZO Leads · cache para abrir sin conexión. HTML network-first; recursos cache-first. */
-var CACHE = 'zo-leads-site-v18';
+var CACHE = 'zo-leads-site-v19';
 var ASSETS = ['./','./index.html','./manifest.webmanifest','./img/icon-192.png','./img/icon-512.png','./img/icon-180.png','./img/wordmark_white.svg','./img/icon_white.svg',
   './img/top_mirada.jpg','./img/top_producto.jpg','./img/bottom_polish.jpg','./img/bottom_mano.jpg','./img/who_polish.jpg','./img/inst_gentle.jpg','./img/wordmark_cobalt.svg',
   './fonts/zo-light.woff2','./fonts/zo-book.woff2','./fonts/zo-regular.woff2','./fonts/geist-light.woff2'];
