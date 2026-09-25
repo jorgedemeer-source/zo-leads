@@ -20,11 +20,14 @@
   body{margin:0;}
   img{max-width:100%;}
   [hidden]{display:none!important;}
-  #inst{position:fixed; inset:0; z-index:61; background:var(--pearl); color:var(--cobalt); overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; align-items:center; padding:calc(22px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));}
-  #inst .wm{height:40px; width:auto; margin-bottom:8px;}
-  #inst .pic{width:min(100%,420px); height:auto; display:block; margin:0 auto;}
-  #inst .mid{width:100%; max-width:420px; display:flex; flex-direction:column; gap:14px; margin-top:-6px;}
-  #inst h2{font-size:1.75rem; font-weight:300; line-height:1.08; color:var(--cobalt); margin-bottom:4px;}
+  #inst{position:fixed; inset:0; z-index:61; background:var(--inst-bg,#E0DCD7); color:var(--cobalt); overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; align-items:center; padding:0 0 calc(22px + env(safe-area-inset-bottom,0px));}
+  #inst .wmband{width:100%; flex:none; background:var(--inst-bg-top,#E3DFDB); padding:calc(26px + env(safe-area-inset-top,0px)) 0 10px; display:flex; justify-content:center;}
+  #inst .top{position:relative; width:100%; height:40vh; min-height:250px; max-height:420px; flex:none;}
+  #inst .top img.pic{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 40%; display:block;}
+  #inst .top::after{content:""; position:absolute; left:0; right:0; bottom:0; height:38%; background:linear-gradient(180deg, rgba(224,220,215,0) 0%, var(--inst-bg,#E0DCD7) 100%);}
+  #inst .wm{height:54px; width:auto;}
+  #inst .mid{width:100%; max-width:440px; display:flex; flex-direction:column; gap:14px; padding:6vh 22px 0;}
+  #inst h2{font-size:1.85rem; font-weight:300; line-height:1.08; color:var(--cobalt); margin-bottom:6px;}
   #inst .step{display:grid; grid-template-columns:44px 1fr; gap:14px; align-items:center; font-size:1rem; font-weight:300; line-height:1.4; color:var(--fg);}
   #inst .step b{font-weight:400; color:var(--cobalt);}
   #inst .ic{width:44px; height:44px; border-radius:11px; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,11,65,.12);}
@@ -32,7 +35,7 @@
   #inst .ic img{width:44px; height:44px; border-radius:11px; display:block;}
   #inst .step .k{display:inline-block; background:#fff; color:var(--cobalt); font-weight:400; border-radius:6px; padding:1px 8px; white-space:nowrap;}
   #inst .wa{font-size:.9rem; color:var(--fg2); border-top:1px solid rgba(0,44,142,.15); padding-top:12px; margin-top:4px;}
-  #inst .skip{background:none; border:0; color:var(--cobalt); opacity:.8; text-decoration:underline; font-size:.95rem; padding:14px 10px 4px; margin-top:auto;}
+  #inst .skip{background:none; border:0; color:var(--cobalt); opacity:.8; text-decoration:underline; font-size:.95rem; padding:18px 10px 4px; margin-top:auto;}
   #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/who_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
   #who::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.45) 0%, rgba(0,11,65,.5) 55%, rgba(0,11,65,.82) 100%);}
   #who .wm{height:44px; width:auto; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
@@ -283,8 +286,8 @@
 </div>
 
 <div id="inst" hidden>
-  <img class="wm" src="img/wordmark_cobalt.svg" alt="ZO Skin Health · By Zein Obagi MD">
-  <img class="pic" src="img/inst_polish.jpg" alt="">
+  <div class="wmband"><img class="wm" src="img/wordmark_cobalt.svg" alt="ZO Skin Health · By Zein Obagi MD"></div>
+  <div class="top"><img class="pic" id="inst-pic" src="img/inst_gentle.jpg" alt=""></div>
   <div class="mid">
     <h2>Guarda ZO Leads<br>en tu iPhone</h2>
     <div class="step"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M8.5 6.5 12 3l3.5 3.5"/><path d="M7 10H5.5A1.5 1.5 0 0 0 4 11.5v8A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-8a1.5 1.5 0 0 0-1.5-1.5H17"/></svg></span><span>Toca este icono, <b>Compartir</b>, en la barra de abajo de Safari.</span></div>
@@ -333,7 +336,8 @@
     evento: "GEDET 2026",
     eventos: ["GEDET 2026"],
     congresoFijo: true,          // true = no se puede cambiar desde el móvil
-    fotos: { nuevoArriba:"img/top_mirada.jpg", nuevoAbajo:"img/bottom_polish.jpg", contactosArriba:"img/top_producto.jpg", contactosAbajo:"img/bottom_mano.jpg" },
+    fotos: { nuevoArriba:"img/top_mirada.jpg", nuevoAbajo:"img/bottom_polish.jpg", contactosArriba:"img/top_producto.jpg", contactosAbajo:"img/bottom_mano.jpg",
+      instalar:"img/inst_gentle.jpg", instalarFondo:"#E0DCD7", instalarFondoArriba:"#E3DFDB" },   // alternativa: img/inst_scrub.jpg, #DDD4CB y #DFD8D0
     equipo: [
       { nombre:"Estel Cortés",    email:"ecortes@zoskinhealth.com" },
       { nombre:"Paula Cambra",    email:"pcambra@zoskinhealth.com" },
@@ -682,6 +686,7 @@
   var esIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
   var instalada = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
   var saltado = false; try { saltado = sessionStorage.getItem('zo_leads_inst_skip')==='1'; } catch(e){}
+  if (C.fotos.instalar){ $('inst-pic').src = C.fotos.instalar; document.documentElement.style.setProperty('--inst-bg', C.fotos.instalarFondo || '#E0DCD7'); document.documentElement.style.setProperty('--inst-bg-top', C.fotos.instalarFondoArriba || C.fotos.instalarFondo || '#E7E3DA'); }
   if (esIOS && !instalada && !saltado) { $('inst').hidden = false; }
   $('inst-skip').addEventListener('click', function(){ $('inst').hidden = true; try { sessionStorage.setItem('zo_leads_inst_skip','1'); } catch(e){}
     $('install-txt').innerHTML = 'Recuerda guardarla como app: <b>Compartir</b> → <b>Añadir a pantalla de inicio</b>.'; $('install-btn').hidden = true; if (!lsGet('zo_leads_install_x')) $('install').hidden = false; });
