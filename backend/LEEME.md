@@ -22,4 +22,10 @@ Notas
 - Para volver a aplicar el estilo: en el editor de Apps Script, elige la función `vestir` y pulsa Ejecutar.
 - Un contacto eliminado en la app no se borra de la hoja: queda con `borrado = TRUE`.
 - Si cambias el script, hay que volver a **Implementar → Gestionar implementaciones → editar → nueva versión**.
+
+## Actualizar el script a una versión nueva (2 minutos)
+
+1. En el editor de Apps Script, borra todo y pega el `apps-script.gs` nuevo. Guarda (Ctrl/Cmd+S).
+2. Arriba, elige la función **vestir** y pulsa **Ejecutar**: arregla las filas antiguas (fecha guardada como número, columna Borrado vacía) y vuelve a maquetar.
+3. **Implementar → Gestionar implementaciones → lápiz → Versión: Nueva versión → Implementar**. La dirección `/exec` no cambia, así que la app sigue funcionando sin tocar nada.
 - Cualquiera que tenga la URL del script puede escribir en la hoja. La URL no se publica en ningún sitio, solo va dentro de la app.

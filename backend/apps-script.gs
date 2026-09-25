@@ -30,8 +30,19 @@ function vestir_(ss, sh) {
   var banding = sh.getRange(1, 1, 2000, n).getBandings();
   if (!banding.length) sh.getRange(1, 1, 2000, n).applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, true, false).setHeaderRowColor(COBALTO).setFirstRowColor(BLANCO).setSecondRowColor(PERLA);
   sh.getRange(2, 2, 2000, 1).setNumberFormat('dd/mm/yyyy hh:mm');
+  sh.getRange(2, 14, 2000, 1).setNumberFormat('@');            // teléfonos como texto
+  migrar_(sh);
   sh.getRange('A1').activate(); sh.getRange(1, 1, 1, n).createFilter && (sh.getFilter() || sh.getRange(1, 1, 2000, n).createFilter());
   resumen_(ss);
+}
+
+/* Arregla filas escritas por versiones anteriores: fecha guardada como número y Borrado vacío. Se ejecuta con vestir. */
+function migrar_(sh) {
+  var n = sh.getLastRow(); if (n < 2) return;
+  var fechas = sh.getRange(2, 2, n - 1, 1); fechas.setNumberFormat('0');
+  var v = fechas.getValues().map(function (r) { var x = r[0]; if (x instanceof Date) return [x]; x = Number(x); return [x > 1e11 ? new Date(x) : (x ? new Date(x * 86400000 - 2209161600000) : '')]; });
+  fechas.setValues(v); fechas.setNumberFormat('dd/mm/yyyy hh:mm');
+  var b = sh.getRange(2, 4, n - 1, 1); b.setValues(b.getValues().map(function (r) { return [r[0] === true || r[0] === 'TRUE' || r[0] === 'true']; }));
 }
 
 /* Pestaña Resumen: contactos por account manager y por congreso, con fórmulas en vivo */
@@ -41,20 +52,20 @@ function resumen_(ss) {
   r.getRange('A1').setValue('ZO Leads · Resumen').setFontFamily('Inter').setFontSize(18).setFontColor(COBALTO);
   r.getRange('A2').setValue('Se actualiza solo con lo que entra por la app.').setFontFamily('Inter').setFontSize(10).setFontColor('#6B6B6B');
   r.getRange('A4:C4').setValues([['Territorio','Account manager','Contactos']]).setBackground(COBALTO).setFontColor(BLANCO).setFontFamily('Inter').setFontWeight('bold');
-  var filas = TERRITORIOS.map(function (t) { return [t[0], t[1], '=COUNTIFS(Contactos!K:K;"' + t[0] + '";Contactos!D:D;FALSE)']; });
-  filas.push(['Total', '', '=COUNTIFS(Contactos!K:K;"<>";Contactos!D:D;FALSE)']);
+  var filas = TERRITORIOS.map(function (t) { return [t[0], t[1], '=COUNTIFS(Contactos!K:K,"' + t[0] + '",Contactos!D:D,FALSE)']; });
+  filas.push(['Total', '', '=COUNTIFS(Contactos!K:K,"<>",Contactos!D:D,FALSE)']);
   r.getRange(5, 1, filas.length, 3).setValues(filas).setFontFamily('Inter').setFontSize(11);
   r.getRange(5 + filas.length - 1, 1, 1, 3).setFontWeight('bold').setFontColor(COBALTO);
   r.getRange('E4:F4').setValues([['Congreso','Contactos']]).setBackground(COBALTO).setFontColor(BLANCO).setFontFamily('Inter').setFontWeight('bold');
-  r.getRange('E5').setFormula('=IFERROR(SORT(UNIQUE(FILTER(Contactos!E2:E;Contactos!E2:E<>"";Contactos!D2:D=FALSE)));"")');
-  r.getRange('F5').setFormula('=ARRAYFORMULA(IF(E5:E20="";"";COUNTIFS(Contactos!E:E;E5:E20;Contactos!D:D;FALSE)))');
+  r.getRange('E5').setFormula('=IFERROR(SORT(UNIQUE(FILTER(Contactos!E2:E,Contactos!E2:E<>"",Contactos!D2:D=FALSE))),"")');
+  r.getRange('F5').setFormula('=ARRAYFORMULA(IF(E5:E20="","",COUNTIFS(Contactos!E:E,E5:E20,Contactos!D:D,FALSE)))');
   r.setColumnWidth(1, 240); r.setColumnWidth(2, 200); r.setColumnWidth(3, 110); r.setColumnWidth(4, 30); r.setColumnWidth(5, 200); r.setColumnWidth(6, 110);
   r.setHiddenGridlines(true);
 }
 function leer_() {
   var sh = hoja_(); var n = sh.getLastRow(); if (n < 2) return [];
   var vals = sh.getRange(2, 1, n - 1, COLS.length).getValues();
-  return vals.map(function (r) { var o = {}; COLS.forEach(function (k, i) { o[k] = r[i]; }); o.ts = Number(o.ts) || 0; o.editado = Number(o.editado) || 0; o.borrado = (o.borrado === true || o.borrado === 'TRUE' || o.borrado === 'true'); return o; }).filter(function (o) { return o.id; });
+  return vals.map(function (r) { var o = {}; COLS.forEach(function (k, i) { o[k] = r[i]; }); o.ts = o.ts instanceof Date ? o.ts.getTime() : (Number(o.ts) || 0); o.editado = Number(o.editado) || 0; o.borrado = (o.borrado === true || o.borrado === 'TRUE' || o.borrado === 'true'); return o; }).filter(function (o) { return o.id; });
 }
 function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify(leer_())).setMimeType(ContentService.MimeType.JSON);
@@ -66,7 +77,12 @@ function doPost(e) {
     if (body.action === 'upsert' && body.lead && body.lead.id) {
       var sh = hoja_(); var l = body.lead; var n = sh.getLastRow();
       var ids = n >= 2 ? sh.getRange(2, 1, n - 1, 1).getValues().map(function (r) { return String(r[0]); }) : [];
-      var row = COLS.map(function (k) { var v = l[k]; return v === undefined || v === null ? '' : v; });
+      var row = COLS.map(function (k) { var v = l[k];
+        if (k === 'ts') return v ? new Date(Number(v)) : '';                 // fecha real en la hoja
+        if (k === 'borrado') return !!v;
+        if (v === undefined || v === null) return '';
+        if (typeof v === 'string' && /^[=+\-@']|^\d/.test(v)) return "'" + v;   // texto literal: ni fórmulas ni números
+        return v; });
       var i = ids.indexOf(String(l.id));
       if (i >= 0) {
         var prev = Number(sh.getRange(i + 2, 3).getValue()) || 0;   // columna editado

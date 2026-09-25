@@ -7,6 +7,8 @@
 <meta name="description" content="Captación de contactos de profesionales en congresos. ZO Skin Health España.">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#002C8E">
+<meta name="color-scheme" content="only light">
+<meta name="robots" content="noindex,nofollow">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -14,21 +16,22 @@
 <link rel="apple-touch-icon" href="img/icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png">
 <style>
-  html{color-scheme:light;}
+  html{color-scheme:only light; background:var(--cobalt-deep);}
   body{margin:0;}
   img{max-width:100%;}
   [hidden]{display:none!important;}
-  .hero .wrap{padding-top:calc(20px + env(safe-area-inset-top,0px));}
-  #inst{position:fixed; inset:0; z-index:61; background:var(--cobalt); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
-  #inst .wm{height:44px; width:auto;}
+  #inst{position:fixed; inset:0; z-index:61; background:var(--cobalt) url("img/inst_blue.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
+  #inst::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.25) 0%, rgba(0,11,65,.45) 50%, rgba(0,11,65,.7) 100%);}
+  #inst .wm{height:44px; width:auto; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
+  #inst h2,#inst ol{text-shadow:0 1px 10px rgba(0,11,65,.45);}
   #inst .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:18px;}
   #inst h2{font-size:1.7rem; font-weight:300; text-align:center; line-height:1.1;}
   #inst ol{margin:0; padding-left:22px; font-size:1.05rem; font-weight:300; line-height:1.5; display:flex; flex-direction:column; gap:10px;}
   #inst ol b{font-weight:400;}
   #inst .icon{width:72px; height:72px; border-radius:16px; box-shadow:0 8px 24px rgba(0,11,65,.4);}
   #inst .skip{background:none; border:0; color:#fff; opacity:.75; text-decoration:underline; font-size:.95rem; padding:10px;}
-  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/bottom_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
-  #who::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.55) 0%, rgba(0,11,65,.55) 55%, rgba(0,11,65,.85) 100%);}
+  #who{position:fixed; inset:0; z-index:60; background:var(--cobalt) url("img/who_polish.jpg") center/cover no-repeat; color:#fff; isolation:isolate; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:calc(28px + env(safe-area-inset-top,0px)) 24px calc(28px + env(safe-area-inset-bottom,0px));}
+  #who::before{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.45) 0%, rgba(0,11,65,.5) 55%, rgba(0,11,65,.82) 100%);}
   #who .wm{height:44px; width:auto; filter:drop-shadow(0 1px 8px rgba(0,11,65,.5));}
   #who .mid{width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; gap:14px;}
   #who label{font-weight:300; font-size:1.25rem; text-align:center; letter-spacing:-.01em;}
@@ -38,6 +41,7 @@
   #who .mailrow input:focus{outline:2px solid #fff; outline-offset:2px;}
   #who .dom{font-weight:300; font-size:1.05rem; white-space:nowrap; opacity:.92;}
   #who .go{background:#fff; color:var(--cobalt); border:0; border-radius:8px; padding:16px 28px; font-size:1.05rem; font-weight:500; min-height:56px; width:100%; margin-top:4px;}
+  @media (max-width:360px){ #who .mailrow{flex-wrap:wrap;} #who .dom{width:100%; text-align:right;} }
   #who #who-err{margin:0; font-size:.92rem; color:#FFB4B4; text-align:center;}
   #who .foot{font-weight:300; font-size:1rem; letter-spacing:.02em; text-align:center; opacity:.95;}
   #who .foot sup{font-size:.55em; vertical-align:super; margin:0 1px 0 0;}
@@ -60,8 +64,8 @@
     --fm:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{background:var(--pearl); color:var(--fg); font-family:var(--fs); font-weight:300; font-size:17px; line-height:1.45; -webkit-font-smoothing:antialiased; padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
+  html,body{min-height:100%;}
+  body{background:var(--pearl); color:var(--fg); font-family:var(--fs); font-weight:300; font-size:17px; line-height:1.45; -webkit-font-smoothing:antialiased; padding-top:env(safe-area-inset-top,0px); padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
   h1,h2,h3{font-weight:300; letter-spacing:-.015em; margin:0; text-wrap:balance;}
   b,strong{font-weight:400;}
   button,input,select,textarea{font-family:inherit; font-size:inherit; color:inherit;}
@@ -88,7 +92,7 @@
   .band::after{content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg, rgba(0,44,142,.12) 0%, rgba(0,11,65,.35) 100%);}
   .band .sig{position:absolute; inset:auto; left:20px; top:18px; height:34px; width:auto; z-index:1; filter:drop-shadow(0 1px 8px rgba(0,11,65,.4));}
   .band .cap{position:absolute; left:20px; bottom:20px; font-family:var(--fm); font-weight:300; font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:#fff; opacity:.9;}
-  #dot{position:absolute; top:auto; bottom:22px; right:18px; font-family:var(--fm); font-weight:300; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-dim); display:flex; align-items:center; gap:6px;}
+  #dot{position:absolute; top:90px; right:18px; max-width:55%; text-align:right; font-family:var(--fm); font-weight:300; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:var(--on-dark-dim); display:flex; align-items:center; gap:6px;}
   #dot i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.4); display:inline-block;}
   #dot.ok i{background:#7FE0A6;}
   #dot.bad i{background:#FF9B9B;}
@@ -107,7 +111,9 @@
   input::placeholder,textarea::placeholder{color:#A6A6A6;}
   select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'><path d='M1 1l6 6 6-6' fill='none' stroke='%23151515' stroke-width='1.3'/></svg>"); background-repeat:no-repeat; background-position:right 16px center; padding-right:42px;}
   textarea{min-height:96px; resize:vertical;}
-  select:disabled{opacity:1; color:var(--fg2); background-image:none; background-color:#F4F4F1;}
+  select:disabled{opacity:1; color:var(--fg2); -webkit-text-fill-color:var(--fg2); background-image:none; background-color:#F4F4F1;}
+  button,.chip{touch-action:manipulation; -webkit-tap-highlight-color:transparent;}
+  @media (hover:hover){ .btn:hover{background:#E2DFD7;} .btn.primary:hover{background:var(--cobalt-deep);} .export .btn.fill:hover{background:#F0F0F0;} }
   input:focus,select:focus,textarea:focus{outline:none; border-color:var(--cobalt); box-shadow:0 0 0 3px rgba(0,44,142,.18);}
   button:focus-visible{outline:2px solid var(--cobalt); outline-offset:2px;}
   input.err,select.err{border-color:var(--bad); box-shadow:0 0 0 3px rgba(142,27,27,.15);}
@@ -126,9 +132,7 @@
 
   /* botones como la web: primario cobalto redondeado, secundario gris */
   .btn{border:0; background:var(--grey-btn); color:var(--fg); border-radius:8px; padding:13px 20px; font-size:.95rem; font-weight:500; display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:46px; transition:background .18s ease,color .18s ease;}
-  .btn:hover{background:#E2DFD7;}
   .btn.primary{background:var(--cobalt); color:#fff; width:100%; padding:20px 18px; font-size:1.05rem; min-height:60px;}
-  .btn.primary:hover{background:var(--cobalt-deep);}
   .btn.quiet{background:transparent; border:1px solid var(--hair); font-weight:400;}
   .btn.danger{background:transparent; border:1px solid var(--bad); color:var(--bad);}
   .btn.sm{padding:11px 16px; font-size:.92rem; min-height:44px;}
@@ -172,7 +176,6 @@
   .export .meta{color:var(--on-dark-dim); margin-bottom:6px;}
   .export p{margin:0 0 16px; font-size:1rem;}
   .export .btn.fill{background:#fff; color:var(--cobalt); width:100%; min-height:56px; font-size:1rem;}
-  .export .btn.fill:hover{background:#F0F0F0;}
   .export .actions{margin-top:0;}
   .export ol{margin:16px 0 0; padding-left:20px; color:var(--on-dark-dim); font-size:.86rem; line-height:1.5;}
   .export ol b{color:#fff; font-weight:400;}
@@ -257,7 +260,7 @@
       <div class="chips" id="chips"></div>
     </div>
 
-    <div class="listhead"><span class="meta" id="leads-count"></span><button class="btn sm quiet" id="fl-clear" hidden>Quitar filtros</button></div>
+    <div class="listhead"><span class="meta" id="leads-count"></span><span class="actions" style="margin:0"><button class="btn sm quiet" id="fl-clear" hidden>Quitar filtros</button><button class="btn sm" id="fl-xlsx">Excel</button></span></div>
     <div id="list"><div class="empty">Cargando…</div></div>
 
     <div class="export" id="export">
@@ -265,9 +268,9 @@
       <p id="export-what">Excel con todos los contactos.</p>
       <div class="actions"><button class="btn fill" id="b-xlsx">Descargar Excel</button></div>
       <ol>
-        <li>Toca <b>Descargar Excel</b> y acepta.</li>
-        <li>En el iPhone se guarda en <b>Archivos → Descargas</b>.</li>
-        <li>Ábrelo, toca <b>Compartir</b> y envíalo por Mail o WhatsApp.</li>
+        <li>Toca <b>Descargar Excel</b>.</li>
+        <li>En el iPhone se abre <b>Compartir</b>: elige Mail, WhatsApp o Guardar en Archivos.</li>
+        <li>Si no se abre, el fichero está en <b>Archivos → Descargas</b>.</li>
       </ol>
     </div>
   </section>
@@ -281,6 +284,7 @@
   <div class="mid">
     <h2>Guarda ZO Leads en tu iPhone</h2>
     <ol>
+      <li>Si lo has abierto desde WhatsApp o el correo, toca antes <b>Abrir en Safari</b> (la brújula, abajo a la derecha).</li>
       <li>Toca <b>Compartir</b>, el cuadrado con la flecha hacia arriba, abajo en Safari.</li>
       <li>Baja y toca <b>Añadir a pantalla de inicio</b>.</li>
       <li>Toca <b>Añadir</b>. Ya tienes la app; ábrela desde el icono.</li>
@@ -294,7 +298,7 @@
   <form class="mid" id="who-form" autocomplete="off">
     <label for="who-otro">Introduce tu correo electrónico</label>
     <div class="mailrow"><input type="text" id="who-otro" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="nombre"><span class="dom">@zoskinhealth.com</span></div>
-    <p id="who-err" hidden>Ese correo no está en el equipo. Revísalo.</p>
+    <p id="who-err" hidden>Ese correo no está en el equipo. Escribe solo lo que va antes de la @ (por ejemplo, rsantana).</p>
     <button type="submit" class="go" id="who-ok">Entrar</button>
   </form>
   <div class="foot">ZO<sup>®</sup> Leads Library</div>
@@ -391,20 +395,23 @@
       if (i<0){ LEADS.push(r); changed=true; } else if ((r.editado||r.ts||0) > (LEADS[i].editado||LEADS[i].ts||0)){ LEADS[i]=r; changed=true; } });
     if (changed){ LEADS.sort(function(a,b){ return (b.ts||0)-(a.ts||0); }); persist(); renderList(); }
   }
-  var sending = false;
+  var sending = false, HOJA_OK = false;
+  function pendientes(){ return QUEUE.length + (QUEUE.length===1 ? ' sin enviar' : ' sin enviar'); }
+  function señal(ms){ if (!window.AbortController) return undefined; var ac = new AbortController(); setTimeout(function(){ ac.abort(); }, ms); return ac.signal; }
   function flush(){
     if (!SYNC_URL || sending || !QUEUE.length || !navigator.onLine) return;
     sending = true; var item = QUEUE[0];
-    fetch(SYNC_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(item) })
+    fetch(SYNC_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(item), signal: señal(20000) })
       .then(function(r){ if (!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function(){ QUEUE.shift(); persist(); sending=false; setDot('ok','sincronizado'); flush(); })
-      .catch(function(){ sending=false; setDot('bad','pendiente de enviar'); setTimeout(flush, 15000); });
+      .then(function(t){ if (String(t).trim() !== 'ok') throw new Error('respuesta inesperada');   // Apps Script devuelve 200 + HTML cuando falla
+        QUEUE.shift(); persist(); sending=false; setDot('ok', QUEUE.length ? pendientes() : 'sincronizado'); flush(); })
+      .catch(function(){ sending=false; setDot('bad', pendientes()); setTimeout(flush, 15000); });
   }
   function pull(){
     if (!SYNC_URL || !navigator.onLine) return;
-    fetch(SYNC_URL + (SYNC_URL.indexOf('?')>=0 ? '&' : '?') + 't=' + Date.now(), { method:'GET' })
+    fetch(SYNC_URL + (SYNC_URL.indexOf('?')>=0 ? '&' : '?') + 't=' + Date.now(), { method:'GET', signal: señal(15000) })
       .then(function(r){ return r.json(); })
-      .then(function(data){ mergeRemote(Array.isArray(data) ? data : (data.leads||[])); setDot('ok', QUEUE.length ? 'pendiente de enviar' : 'sincronizado'); })
+      .then(function(data){ HOJA_OK = true; mergeRemote(Array.isArray(data) ? data : (data.leads||[])); setDot(QUEUE.length ? 'bad' : 'ok', QUEUE.length ? pendientes() : 'sincronizado'); if (!vivos().length) renderList(); })
       .catch(function(){ setDot('bad','sin conexión con la hoja'); });
   }
   function save(l){ upsertLocal(l); QUEUE.push({ action:'upsert', lead:l }); persist(); renderList(); flush(); }
@@ -456,7 +463,7 @@
   }
   function readForm(){
     var prov = $('f-prov').value; var t = prov ? route(prov) : {nombre:'',delegado:'',email:''};
-    var ev = $('f-evento').value === 'Otro congreso' ? $('f-evento-otro').value.trim() : $('f-evento').value;
+    var ev = ($('f-evento').value === 'Otro congreso' || !$('f-evento').value) ? $('f-evento-otro').value.trim() : $('f-evento').value;
     return {
       evento: ev, nombre: $('f-nombre').value.trim(), clinica: $('f-clinica').value.trim(), especialidad: $('f-esp').value,
       provincia: prov, ciudad: $('f-ciudad').value.trim(), territorio: t.nombre, delegado: t.delegado, delegadoEmail: t.email,
@@ -499,7 +506,7 @@
     var id = $('f-id').value;
     if (id){
       var prev = LEADS.find(function(x){ return x.id===id; }) || {};
-      d.id = id; d.ts = prev.ts || Date.now(); d.editado = Date.now();
+      d.id = id; d.ts = prev.ts || Date.now(); d.editado = Date.now(); d.captador = prev.captador || d.captador;
       save(d); resetForm(); toast('Contacto actualizado.'); show('leads');
     } else {
       d.id = uid(); d.ts = Date.now(); d.editado = d.ts;
@@ -507,6 +514,7 @@
     }
   });
   $('f-cancel').addEventListener('click', function(){ resetForm(); show('leads'); });
+  ['input','change'].forEach(function(ev){ $('f').addEventListener(ev, function(e){ if (e.target && e.target.classList) e.target.classList.remove('err'); }); });
   $('f-prov').addEventListener('change', updateRoute);
 
   /* ---------- contactos: filtros + lista ---------- */
@@ -541,9 +549,9 @@
     $('k-total').textContent = all.length;
     $('nav-cnt').textContent = all.length; $('nav-cnt').hidden = !all.length;
     $('export-what').textContent = rows.length ? ('Excel con ' + rows.length + (rows.length===1?' contacto':' contactos') + ' · ' + filterLabel() + '.') : 'No hay contactos que exportar con este filtro.';
-    $('b-xlsx').disabled = !rows.length;
+    $('b-xlsx').disabled = !rows.length; $('fl-xlsx').hidden = !rows.length;
     renderEventFilter(); renderChips();
-    if (!rows.length){ $('list').innerHTML = '<div class="empty">' + (all.length ? 'Nada coincide con el filtro.' : 'Todavía no hay contactos.') + '</div>'; return; }
+    if (!rows.length){ $('list').innerHTML = '<div class="empty">' + (all.length ? 'Nada coincide con el filtro.' : (SYNC_URL && !HOJA_OK ? 'Conectando con la hoja del equipo… Si no hay cobertura, los contactos aparecerán al recuperarla.' : 'Todavía no hay contactos.')) + '</div>'; return; }
     $('list').innerHTML = rows.map(function(l){
       var line2 = [l.especialidad, (l.nombre ? l.clinica : ''), [l.ciudad, l.provincia].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
       var contact = [l.telefono, l.email].filter(Boolean).join(' · ');
@@ -608,32 +616,34 @@
   function loadXLSX(){
     if (typeof XLSX !== 'undefined') return Promise.resolve(true);
     if (loadXLSX.p) return loadXLSX.p;
-    loadXLSX.p = new Promise(function(res){ var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; sc.onload=function(){ res(true); }; sc.onerror=function(){ res(false); }; document.head.appendChild(sc); });
+    loadXLSX.p = new Promise(function(res){ var sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; sc.onload=function(){ res(true); }; sc.crossOrigin='anonymous'; sc.onerror=function(){ loadXLSX.p=null; res(false); }; document.head.appendChild(sc); });
     return loadXLSX.p;
   }
   function entregar(name, data, type){
     var file = null; try { file = new File([data], name, { type:type }); } catch(e){}
     if (file && navigator.canShare && navigator.canShare({ files:[file] })){
-      return navigator.share({ files:[file], title:name }).then(function(){ toast('Excel enviado.'); }).catch(function(err){ if (err && err.name==='AbortError') return; descargar(name, data, type); });
+      return navigator.share({ files:[file], title:name }).then(function(){ toast('Excel enviado.'); }).catch(function(err){ if (err && err.name==='AbortError') return; if (err && err.name==='NotAllowedError'){ toast('Toca otra vez «Descargar Excel».', true); return; } descargar(name, data, type); });
     }
     descargar(name, data, type); return Promise.resolve();
   }
   function descargar(name, data, type){
     var blob = new Blob([data], { type:type }); var url = URL.createObjectURL(blob);
     var a = document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
-    toast('Excel descargado. Búscalo en Archivos → Descargas.');
+    toast((/\.csv$/.test(name) ? 'Fichero' : 'Excel') + ' descargado. Búscalo en Archivos → Descargas.');
+  }
+  function exportar(){
+    var rows = filtered().slice().sort(function(a,b){ return amDe(a).localeCompare(amDe(b),'es') || (a.provincia||'').localeCompare(b.provincia||'','es') || a.ts-b.ts; });
+    if (!rows.length) return toast('No hay contactos que exportar.', true);
+    var base = 'contactos_' + slug(filterLabel()) + '_' + new Date().toISOString().slice(0,10);
+    try { entregar(base + '.xlsx', xlsx(rows), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); }
+    catch(e){ entregar(base + '.csv', csv(rows), 'text/csv'); }
   }
   $('b-xlsx').addEventListener('click', function(){
-    var btn = this; btn.disabled = true;
-    loadXLSX().then(function(){
-      btn.disabled = false;
-      var rows = filtered().slice().sort(function(a,b){ return amDe(a).localeCompare(amDe(b),'es') || (a.provincia||'').localeCompare(b.provincia||'','es') || a.ts-b.ts; });
-      if (!rows.length) return toast('No hay contactos que exportar.', true);
-      var base = 'contactos_' + slug(filterLabel()) + '_' + new Date().toISOString().slice(0,10);
-      try { entregar(base + '.xlsx', xlsx(rows), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); }
-      catch(e){ entregar(base + '.csv', csv(rows), 'text/csv'); }
-    });
+    var btn = this;
+    if (typeof XLSX !== 'undefined') { exportar(); return; }      // mismo toque: en iPhone abre Compartir
+    btn.disabled = true; loadXLSX().then(function(){ btn.disabled = false; exportar(); });
   });
+  $('fl-xlsx').addEventListener('click', function(){ $('b-xlsx').click(); });
 
   /* ---------- navegación ---------- */
   function show(s){
@@ -645,12 +655,14 @@
     $('hero-img').src = s==='leads' ? C.fotos.contactosArriba : C.fotos.nuevoArriba;
     $('band-img').src = s==='leads' ? C.fotos.contactosAbajo : C.fotos.nuevoAbajo;
     window.scrollTo(0,0);
+    if (s==='leads' && navigator.onLine) loadXLSX();
   }
   Array.prototype.forEach.call(document.querySelectorAll('nav button'), function(b){ b.addEventListener('click', function(){ show(b.dataset.s); }); });
-  var sx=null, sy=null;
-  document.addEventListener('touchstart', function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; }, {passive:true});
-  document.addEventListener('touchend', function(e){ if (sx===null) return; var t=e.changedTouches[0]; var dx=t.clientX-sx, dy=t.clientY-sy; sx=null;
-    if (Math.abs(dx) < 70 || Math.abs(dy) > Math.abs(dx)*0.6) return;
+  var sx=null, sy=null, st=0;
+  document.addEventListener('touchstart', function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; st=Date.now(); }, {passive:true});
+  document.addEventListener('touchcancel', function(){ sx=null; }, {passive:true});
+  document.addEventListener('touchend', function(e){ if (sx===null) return; var t=e.changedTouches[0]; var dx=t.clientX-sx, dy=t.clientY-sy, dt=Date.now()-st; sx=null;
+    if (dt > 500 || Math.abs(dx) < 70 || Math.abs(dy) > 40 || Math.abs(dy) > Math.abs(dx)*0.4) return;
     if (e.target && e.target.closest && e.target.closest('input,select,textarea,.chips')) return;
     var cur = document.querySelector('nav button[aria-current="page"]').dataset.s;
     if (dx < 0 && cur==='nuevo') show('leads'); else if (dx > 0 && cur==='leads') show('nuevo'); }, {passive:true});
@@ -658,7 +670,7 @@
   /* ---------- arranque ---------- */
   resetForm(); renderList(); renderYo();
   if (!YO) askWho();
-  if (SYNC_URL){ setDot('', 'conectando'); pull(); flush(); setInterval(pull, 45000); window.addEventListener('focus', pull); window.addEventListener('online', function(){ flush(); pull(); }); }
+  if (SYNC_URL){ setDot('', 'conectando'); pull(); flush(); setInterval(pull, 45000); window.addEventListener('focus', pull); document.addEventListener('visibilitychange', function(){ if (!document.hidden){ flush(); pull(); } }); window.addEventListener('online', function(){ flush(); pull(); }); }
   else { setDot('ok', 'solo este móvil'); }
 
   /* ---------- instalación como app / sin conexión ---------- */
