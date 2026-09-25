@@ -252,7 +252,7 @@
 
   <section id="s-leads">
     <div class="kpis">
-      <div class="kpi"><div class="big" id="k-total">0</div><div class="meta">contactos del equipo</div></div>
+      <div class="kpi"><div class="big" id="k-total">0</div><div class="meta" id="k-meta">contactos del equipo</div></div>
     </div>
 
     <div class="filters">
@@ -436,7 +436,17 @@
   var YO = porEnlace() || lsGet('zo_leads_yo') || '';
   if (YO) lsSet('zo_leads_yo', YO);
   if (/[?&]yo=/.test(location.search) && history.replaceState) { try { history.replaceState(null, '', location.pathname); } catch(e){} }
-  function renderYo(){ $('yo-name').textContent = YO || 'nadie todavía'; }
+  function esEquipo(){ return C.equipo.some(function(p){ return p.nombre===YO; }); }
+  function miTerritorio(){ var t = C.territorios.find(function(t){ return t.delegado===YO; }); return t ? t.delegado : ''; }
+  function soloMios(){ return !esEquipo() && !!miTerritorio(); }       // account manager: solo los contactos de su territorio
+  function visibles(){ return soloMios() ? vivos().filter(function(l){ return amDe(l)===YO; }) : vivos(); }
+  function aplicarRol(){
+    var m = soloMios();
+    $('fl-del').closest('.field').hidden = m; $('chips').hidden = m; if (m) { FILTER.del=''; $('fl-del').value=''; }
+    $('k-meta').textContent = m ? 'contactos de tu territorio' : 'contactos del equipo';
+    if (aplicarRol.listo) renderList();
+  }
+  function renderYo(){ $('yo-name').textContent = YO || 'nadie todavía'; aplicarRol(); }
   function askWho(){ $('who-err').hidden = true; $('who-otro').value=''; $('who').hidden = false; setTimeout(function(){ $('who-otro').focus(); }, 50); }
   function setYo(n){ YO = n; lsSet('zo_leads_yo', n); $('who').hidden = true; renderYo(); toast('Hola, ' + n.split(' ')[0] + '. Tus contactos llevarán tu nombre.'); }
   function porEmail(v){
@@ -528,7 +538,7 @@
   /* ---------- contactos: filtros + lista ---------- */
   function filtered(){
     var q = FILTER.q.toLowerCase().trim();
-    return vivos().filter(function(l){
+    return visibles().filter(function(l){
       if (FILTER.del && amDe(l) !== FILTER.del) return false;
       if (FILTER.prov && l.provincia !== FILTER.prov) return false;
       if (FILTER.ev && l.evento !== FILTER.ev) return false;
@@ -541,7 +551,7 @@
     if (FILTER.ev) parts.push(FILTER.ev);
     if (FILTER.del) parts.push(FILTER.del);
     if (FILTER.prov) parts.push(FILTER.prov);
-    return parts.length ? parts.join(' · ') : 'Nacional';
+    return parts.length ? parts.join(' · ') : (soloMios() ? YO : 'Nacional');
   }
   function renderChips(){
     var by = {}; vivos().forEach(function(l){ by[amDe(l)||'—'] = (by[amDe(l)||'—']||0)+1; });
@@ -550,7 +560,7 @@
     }).join('');
   }
   function renderList(){
-    var all = vivos(); var rows = filtered();
+    var all = visibles(); var rows = filtered();
     var any = FILTER.del || FILTER.prov || FILTER.ev || FILTER.q;
     $('leads-count').textContent = rows.length + ' de ' + all.length + ' · ' + filterLabel();
     $('fl-clear').hidden = !any;
@@ -559,7 +569,7 @@
     $('export-what').textContent = rows.length ? ('Excel con ' + rows.length + (rows.length===1?' contacto':' contactos') + ' · ' + filterLabel() + '.') : 'No hay contactos que exportar con este filtro.';
     $('b-xlsx').disabled = !rows.length; $('fl-xlsx').hidden = !rows.length;
     renderEventFilter(); renderChips();
-    if (!rows.length){ $('list').innerHTML = '<div class="empty">' + (all.length ? 'Nada coincide con el filtro.' : (SYNC_URL && !HOJA_OK ? 'Conectando con la hoja del equipo… Si no hay cobertura, los contactos aparecerán al recuperarla.' : 'Todavía no hay contactos.')) + '</div>'; return; }
+    if (!rows.length){ $('list').innerHTML = '<div class="empty">' + (all.length ? 'Nada coincide con el filtro.' : (SYNC_URL && !HOJA_OK ? 'Conectando con la hoja del equipo… Si no hay cobertura, los contactos aparecerán al recuperarla.' : (soloMios() ? 'Todavía no hay contactos en tu territorio.' : 'Todavía no hay contactos.'))) + '</div>'; return; }
     $('list').innerHTML = rows.map(function(l){
       var line2 = [l.especialidad, (l.nombre ? l.clinica : ''), [l.ciudad, l.provincia].filter(Boolean).join(', ')].filter(Boolean).join(' · ');
       var contact = [l.telefono, l.email].filter(Boolean).join(' · ');
@@ -676,7 +686,7 @@
     if (dx < 0 && cur==='nuevo') show('leads'); else if (dx > 0 && cur==='leads') show('nuevo'); }, {passive:true});
 
   /* ---------- arranque ---------- */
-  resetForm(); renderList(); renderYo();
+  resetForm(); renderList(); aplicarRol.listo = true; renderYo();
   if (!YO) askWho();
   if (SYNC_URL){ setDot('', 'conectando'); pull(); flush(); setInterval(pull, 45000); window.addEventListener('focus', pull); document.addEventListener('visibilitychange', function(){ if (!document.hidden){ flush(); pull(); } }); window.addEventListener('online', function(){ flush(); pull(); }); }
   else { setDot('ok', 'solo este móvil'); }
